@@ -1,0 +1,15 @@
+{
+  "name": "pb138-rest-api-demo",
+  "private": true,
+  "scripts": {
+    "dev": "turbo dev",
+    "build": "turbo build",
+    "generate": "turbo generate"
+  },
+  "devDependencies": {
+    "turbo": "latest"
+  },
+  "workspaces": [
+    "apps/*"
+  ]
+}
