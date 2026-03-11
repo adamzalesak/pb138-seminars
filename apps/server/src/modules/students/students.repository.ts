@@ -1,5 +1,5 @@
 import { randomUUID } from 'crypto'
-import { CreateStudentBody, Student, StudentFilter } from './student.model'
+import type { CreateStudent, Student, StudentFilter } from './student.types'
 
 const students: Student[] = [
   {
@@ -100,27 +100,21 @@ const students: Student[] = [
   },
 ]
 
-export class StudentsRepository {
-  findAll(filter?: StudentFilter): Student[] {
-    let result = [...students]
+export const findAll = (filter?: StudentFilter): Student[] => {
+  let result = [...students]
 
-    // Filter by enrolled course
-    if (filter?.courseId) {
-      result = result.filter((s) => s.enrolledCourseIds.includes(filter.courseId!))
-    }
-
-    return result
+  if (filter?.courseId) {
+    result = result.filter((s) => s.enrolledCourseIds.includes(filter.courseId!))
   }
 
-  findById(id: string): Student | undefined {
-    return students.find((s) => s.id === id)
-  }
-
-  create(body: CreateStudentBody): Student {
-    const newStudent: Student = { ...body, id: randomUUID(), enrolledCourseIds: [] }
-    students.push(newStudent)
-    return newStudent
-  }
+  return result
 }
 
-export const studentsRepository = new StudentsRepository()
+export const findById = (id: string): Student | undefined =>
+  students.find((s) => s.id === id)
+
+export const create = (body: CreateStudent): Student => {
+  const newStudent: Student = { ...body, id: randomUUID(), enrolledCourseIds: [] }
+  students.push(newStudent)
+  return newStudent
+}

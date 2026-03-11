@@ -7,7 +7,7 @@ export interface Student {
   enrolledCourseIds: string[]
 }
 
-export interface CreateStudentBody {
+export interface CreateStudent {
   firstName: string
   lastName: string
   email: string

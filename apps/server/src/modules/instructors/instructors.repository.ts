@@ -1,5 +1,5 @@
 import { randomUUID } from 'crypto'
-import { CreateInstructorBody, Instructor } from './instructor.model'
+import type { CreateInstructor, Instructor } from './instructor.types'
 
 const instructors: Instructor[] = [
   {
@@ -28,20 +28,13 @@ const instructors: Instructor[] = [
   },
 ]
 
-export class InstructorsRepository {
-  findAll(): Instructor[] {
-    return [...instructors]
-  }
+export const findAll = (): Instructor[] => [...instructors]
 
-  findById(id: string): Instructor | undefined {
-    return instructors.find((i) => i.id === id)
-  }
+export const findById = (id: string): Instructor | undefined =>
+  instructors.find((i) => i.id === id)
 
-  create(body: CreateInstructorBody): Instructor {
-    const newInstructor: Instructor = { ...body, id: randomUUID(), courseIds: [] }
-    instructors.push(newInstructor)
-    return newInstructor
-  }
+export const create = (body: CreateInstructor): Instructor => {
+  const newInstructor: Instructor = { ...body, id: randomUUID(), courseIds: [] }
+  instructors.push(newInstructor)
+  return newInstructor
 }
-
-export const instructorsRepository = new InstructorsRepository()

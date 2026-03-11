@@ -19,11 +19,3 @@ dist/
 *.swo
 .DS_Store
 
-# tsoa-generated Express routes
-apps/server/src/generated/
-
-# tsoa-generated OpenAPI spec
-apps/server/openapi.json
-
-# kubb-generated TypeScript clients, hooks, and types
-apps/web/src/generated/

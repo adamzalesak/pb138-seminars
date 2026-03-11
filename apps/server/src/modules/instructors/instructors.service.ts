@@ -1,27 +1,16 @@
-import { CreateInstructorBody } from './instructor.model'
-import { instructorsRepository } from './instructors.repository'
+import type { CreateInstructor } from './instructor.types'
+import * as instructorsRepository from './instructors.repository'
 
-// TODO: Define a Zod schema for CreateInstructorBody here.
-//       Validate that firstName and lastName are non-empty strings (max 50 chars),
-//       that email is a valid email address, and that department is non-empty.
-//       See students.service.ts for an example.
+export const getAll = () =>
+  instructorsRepository.findAll()
 
-export class InstructorsService {
-  getAll() {
-    return instructorsRepository.findAll()
-  }
+export const getById = (id: string) =>
+  instructorsRepository.findById(id)
 
-  getById(id: string) {
-    return instructorsRepository.findById(id)
-  }
-
-  // TODO: Implement this method.
-  //       1. Parse and validate `body` with your Zod schema.
-  //       2. Pass the validated data to instructorsRepository.create().
-  //       3. Return the created instructor.
-  create(body: CreateInstructorBody) {
-    throw new Error('Not implemented')
-  }
+// TODO 2b: Implement this function.
+//          Pass the data to instructorsRepository.create() and return the result.
+//
+//          Reference: students.service.ts → create
+export const create = (body: CreateInstructor) => {
+  throw new Error('Not implemented')
 }
-
-export const instructorsService = new InstructorsService()

@@ -4,11 +4,12 @@
   "scripts": {
     "dev": "turbo dev",
     "build": "turbo build",
-    "generate": "turbo generate"
+    "generate": "turbo run generate"
   },
   "devDependencies": {
     "turbo": "latest"
   },
+  "packageManager": "bun@1.3.1",
   "workspaces": [
     "apps/*"
   ]

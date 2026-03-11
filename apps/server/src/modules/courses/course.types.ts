@@ -12,7 +12,7 @@ export interface Course {
   enrolled: number
 }
 
-export interface CreateCourseBody {
+export interface CreateCourse {
   code: string
   name: string
   description: string
