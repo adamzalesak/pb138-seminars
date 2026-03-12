@@ -3,9 +3,9 @@ import { StudentsPage } from './pages/StudentsPage'
 
 function App() {
   return (
-    <div style={{ fontFamily: 'sans-serif', maxWidth: 900, margin: '0 auto', padding: '2rem' }}>
+    <div className="mx-auto max-w-[900px] p-8 font-sans">
       <CoursesPage />
-      <hr style={{ margin: '2rem 0' }} />
+      <hr className="my-8" />
       <StudentsPage />
     </div>
   )

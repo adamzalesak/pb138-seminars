@@ -36,7 +36,7 @@ export function StudentsPage() {
 
   return (
     <div>
-      <h2 style={{ marginBottom: '1.5rem' }}>Students</h2>
+      <h2 className="mb-6">Students</h2>
       {/* Replace this with your implementation */}
       <p>Not implemented yet.</p>
     </div>

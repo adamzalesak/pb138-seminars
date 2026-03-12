@@ -10,47 +10,28 @@ function CourseCard({ course }: { course: Course }) {
   const occupancy = Math.round((course.enrolled / course.capacity) * 100)
 
   return (
-    <div
-      style={{
-        border: '1px solid #ddd',
-        borderRadius: 8,
-        padding: '1rem 1.25rem',
-        display: 'flex',
-        flexDirection: 'column',
-        gap: 8,
-      }}
-    >
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
-        <strong style={{ fontSize: '1rem' }}>
-          {course.code} – {course.name}
-        </strong>
-        <span style={{ fontSize: '0.8rem', color: '#666' }}>
-          {course.credits} credits
-        </span>
+    <div className="flex flex-col gap-2 rounded-lg border border-border p-4">
+      <div className="flex items-baseline justify-between">
+        <strong>{course.code} – {course.name}</strong>
+        <span className="text-xs text-muted-foreground">{course.credits} credits</span>
       </div>
 
-      <p style={{ margin: 0, fontSize: '0.875rem', color: '#444' }}>{course.description}</p>
+      <p className="m-0 text-sm text-muted-foreground">{course.description}</p>
 
-      <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+      <div className="flex flex-wrap gap-1.5">
         {course.tags.map((tag) => (
           <span
             key={tag}
-            style={{
-              background: '#e8f0fe',
-              color: '#1a73e8',
-              borderRadius: 4,
-              padding: '2px 8px',
-              fontSize: '0.75rem',
-            }}
+            className="rounded bg-primary/10 px-2 py-0.5 text-xs text-primary"
           >
             {tag}
           </span>
         ))}
       </div>
 
-      <div style={{ fontSize: '0.8rem', color: '#666' }}>
+      <div className="text-xs text-muted-foreground">
         {course.semester.charAt(0).toUpperCase() + course.semester.slice(1)} {course.year}
-        &nbsp;·&nbsp;
+        {' · '}
         {course.enrolled}/{course.capacity} enrolled ({occupancy}%)
       </div>
     </div>
@@ -74,19 +55,13 @@ export function CoursesPage() {
   }
 
   if (isError) {
-    return <p style={{ color: 'red' }}>Failed to load courses. Is the server running?</p>
+    return <p className="text-destructive">Failed to load courses. Is the server running?</p>
   }
 
   return (
     <div>
-      <h1 style={{ marginBottom: '1.5rem' }}>Courses</h1>
-      <div
-        style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
-          gap: '1rem',
-        }}
-      >
+      <h1 className="mb-6">Courses</h1>
+      <div className="grid grid-cols-[repeat(auto-fill,minmax(280px,1fr))] gap-4">
         {courses?.map((course) => (
           <CourseCard key={course.id} course={course} />
         ))}
