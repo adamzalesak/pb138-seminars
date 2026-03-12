@@ -10,7 +10,7 @@ import type { QueryKey, QueryClient, QueryObserverOptions, UseQueryResult } from
 import { getCourses } from "../clients/getCourses.ts";
 import { queryOptions, useQuery } from "@tanstack/react-query";
 
-export const getCoursesQueryKey = (params?: GetCoursesQueryParams) => [{ url: '/courses' }, ...(params ? [params] : [])] as const
+export const getCoursesQueryKey = (params?: GetCoursesQueryParams) => [{ url: '/courses/' }, ...(params ? [params] : [])] as const
 
 export type GetCoursesQueryKey = ReturnType<typeof getCoursesQueryKey>
 
@@ -28,7 +28,7 @@ export function getCoursesQueryOptions(params?: GetCoursesQueryParams, config: P
 
 /**
  * @description Returns all courses. Supports optional filtering via query parameters.
- * {@link /courses}
+ * {@link /courses/}
  */
 export function useGetCourses<TData = GetCoursesQueryResponse, TQueryData = GetCoursesQueryResponse, TQueryKey extends QueryKey = GetCoursesQueryKey>(params?: GetCoursesQueryParams, options: 
 {

@@ -1,9 +1,9 @@
-export { createCourse } from "./createCourse.ts";
-export { createInstructor } from "./createInstructor.ts";
-export { createStudent } from "./createStudent.ts";
-export { getCourseById } from "./getCourseById.ts";
 export { getCourses } from "./getCourses.ts";
-export { getInstructorById } from "./getInstructorById.ts";
+export { getCoursesById } from "./getCoursesById.ts";
 export { getInstructors } from "./getInstructors.ts";
-export { getStudentById } from "./getStudentById.ts";
+export { getInstructorsById } from "./getInstructorsById.ts";
 export { getStudents } from "./getStudents.ts";
+export { getStudentsById } from "./getStudentsById.ts";
+export { postCourses } from "./postCourses.ts";
+export { postInstructors } from "./postInstructors.ts";
+export { postStudents } from "./postStudents.ts";

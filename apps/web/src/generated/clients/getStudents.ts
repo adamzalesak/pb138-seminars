@@ -8,13 +8,13 @@ import type { RequestConfig, ResponseErrorConfig } from "../../lib/axios";
 import type { GetStudentsQueryResponse, GetStudentsQueryParams } from "../types/GetStudents.ts";
 
 function getGetStudentsUrl() {
-  const res = { method: 'GET', url: `/students` as const }  
+  const res = { method: 'GET', url: `/students/` as const }  
   return res
 }
 
 /**
  * @description Returns all students. Optionally filter by enrolled course.
- * {@link /students}
+ * {@link /students/}
  */
 export async function getStudents(params?: GetStudentsQueryParams, config: Partial<RequestConfig> & { client?: typeof fetch } = {}) {
   const { client: request = fetch, ...requestConfig } = config  

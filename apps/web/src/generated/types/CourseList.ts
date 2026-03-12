@@ -4,14 +4,14 @@
 */
 
 
-export const courseSemesterEnum = {
+export const courseListSemesterEnum = {
     "fall": "fall",
     "spring": "spring"
 } as const;
 
-export type CourseSemesterEnum = (typeof courseSemesterEnum)[keyof typeof courseSemesterEnum];
+export type CourseListSemesterEnum = (typeof courseListSemesterEnum)[keyof typeof courseListSemesterEnum];
 
-export type Course = {
+export type CourseList = {
     /**
      * @type string
     */
@@ -41,7 +41,7 @@ export type Course = {
     /**
      * @type string
     */
-    semester: CourseSemesterEnum;
+    semester: CourseListSemesterEnum;
     /**
      * @minLength -9007199254740991
      * @maxLength 9007199254740991
@@ -64,4 +64,4 @@ export type Course = {
      * @type integer
     */
     enrolled: number;
-};
+}[];

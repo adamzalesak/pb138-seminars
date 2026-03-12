@@ -3,12 +3,12 @@
 * Do not edit manually.
 */
 
-import type { Instructor } from "./Instructor.ts";
+import type { InstructorList } from "./InstructorList.ts";
 
 /**
- * @description List of instructors
+ * @description Response for status 200
 */
-export type GetInstructors200 = Instructor[];
+export type GetInstructors200 = InstructorList;
 
 export type GetInstructorsQueryResponse = GetInstructors200;
 

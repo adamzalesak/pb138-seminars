@@ -1,8 +1,374 @@
 {
-  "openapi": "3.1.0",
+  "openapi": "3.0.3",
   "info": {
     "title": "PB138 REST API",
+    "description": "Development documentation",
     "version": "1.0.0"
+  },
+  "paths": {
+    "/students/": {
+      "get": {
+        "tags": [
+          "Students"
+        ],
+        "description": "Returns all students. Optionally filter by enrolled course.",
+        "parameters": [
+          {
+            "name": "courseId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Response for status 200",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StudentList"
+                }
+              }
+            }
+          }
+        },
+        "operationId": "getStudents"
+      },
+      "post": {
+        "tags": [
+          "Students"
+        ],
+        "description": "Creates a new student. Validates email format and UCO (must be exactly 6 digits).",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateStudentBody"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateStudentBody"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateStudentBody"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Response for status 200",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Student"
+                }
+              }
+            }
+          }
+        },
+        "operationId": "postStudents"
+      }
+    },
+    "/students/{id}": {
+      "get": {
+        "tags": [
+          "Students"
+        ],
+        "description": "Returns a single student by ID.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Response for status 200",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Student"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Response for status 404",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "operationId": "getStudentsById"
+      }
+    },
+    "/courses/": {
+      "get": {
+        "tags": [
+          "Courses"
+        ],
+        "description": "Returns all courses. Supports optional filtering via query parameters.",
+        "parameters": [
+          {
+            "name": "semester",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "fall",
+                "spring"
+              ]
+            }
+          },
+          {
+            "name": "tags",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "minCredits",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": -9007199254740991,
+              "maximum": 9007199254740991
+            }
+          },
+          {
+            "name": "maxCredits",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": -9007199254740991,
+              "maximum": 9007199254740991
+            }
+          },
+          {
+            "name": "instructorId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Response for status 200",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CourseList"
+                }
+              }
+            }
+          }
+        },
+        "operationId": "getCourses"
+      },
+      "post": {
+        "tags": [
+          "Courses"
+        ],
+        "description": "Creates a new course. The request body is validated by Zod.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateCourseBody"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateCourseBody"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateCourseBody"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Response for status 200",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Course"
+                }
+              }
+            }
+          }
+        },
+        "operationId": "postCourses"
+      }
+    },
+    "/courses/{id}": {
+      "get": {
+        "tags": [
+          "Courses"
+        ],
+        "description": "Returns a single course by its ID.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Response for status 200",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Course"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Response for status 404",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "operationId": "getCoursesById"
+      }
+    },
+    "/instructors/": {
+      "get": {
+        "tags": [
+          "Instructors"
+        ],
+        "description": "Returns all instructors.",
+        "responses": {
+          "200": {
+            "description": "Response for status 200",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InstructorList"
+                }
+              }
+            }
+          }
+        },
+        "operationId": "getInstructors"
+      },
+      "post": {
+        "tags": [
+          "Instructors"
+        ],
+        "description": "Creates a new instructor.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateInstructorBody"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateInstructorBody"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateInstructorBody"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Response for status 200",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Instructor"
+                }
+              }
+            }
+          }
+        },
+        "operationId": "postInstructors"
+      }
+    },
+    "/instructors/{id}": {
+      "get": {
+        "tags": [
+          "Instructors"
+        ],
+        "description": "Returns a single instructor by ID.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Response for status 200",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Instructor"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Response for status 404",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "operationId": "getInstructorsById"
+      }
+    }
   },
   "components": {
     "schemas": {
@@ -20,7 +386,8 @@
           },
           "email": {
             "type": "string",
-            "format": "email"
+            "format": "email",
+            "pattern": "^(?!\\.)(?!.*\\.\\.)([A-Za-z0-9_'+\\-\\.]*)[A-Za-z0-9_+-]@([A-Za-z0-9][A-Za-z0-9\\-]*\\.)+[A-Za-z]{2,}$"
           },
           "uco": {
             "type": "string"
@@ -39,18 +406,48 @@
           "email",
           "uco",
           "enrolledCourseIds"
-        ]
+        ],
+        "additionalProperties": false
       },
-      "ErrorResponse": {
-        "type": "object",
-        "properties": {
-          "message": {
-            "type": "string"
-          }
-        },
-        "required": [
-          "message"
-        ]
+      "StudentList": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "firstName": {
+              "type": "string"
+            },
+            "lastName": {
+              "type": "string"
+            },
+            "email": {
+              "type": "string",
+              "format": "email",
+              "pattern": "^(?!\\.)(?!.*\\.\\.)([A-Za-z0-9_'+\\-\\.]*)[A-Za-z0-9_+-]@([A-Za-z0-9][A-Za-z0-9\\-]*\\.)+[A-Za-z]{2,}$"
+            },
+            "uco": {
+              "type": "string"
+            },
+            "enrolledCourseIds": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "required": [
+            "id",
+            "firstName",
+            "lastName",
+            "email",
+            "uco",
+            "enrolledCourseIds"
+          ],
+          "additionalProperties": false
+        }
       },
       "CreateStudentBody": {
         "type": "object",
@@ -67,7 +464,8 @@
           },
           "email": {
             "type": "string",
-            "format": "email"
+            "format": "email",
+            "pattern": "^(?!\\.)(?!.*\\.\\.)([A-Za-z0-9_'+\\-\\.]*)[A-Za-z0-9_+-]@([A-Za-z0-9][A-Za-z0-9\\-]*\\.)+[A-Za-z]{2,}$"
           },
           "uco": {
             "type": "string",
@@ -79,7 +477,20 @@
           "lastName",
           "email",
           "uco"
-        ]
+        ],
+        "additionalProperties": false
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "message"
+        ],
+        "additionalProperties": false
       },
       "Course": {
         "type": "object",
@@ -97,7 +508,9 @@
             "type": "string"
           },
           "credits": {
-            "type": "integer"
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
           },
           "instructorId": {
             "type": "string"
@@ -110,7 +523,9 @@
             ]
           },
           "year": {
-            "type": "integer"
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
           },
           "tags": {
             "type": "array",
@@ -119,10 +534,14 @@
             }
           },
           "capacity": {
-            "type": "integer"
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
           },
           "enrolled": {
-            "type": "integer"
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
           }
         },
         "required": [
@@ -137,7 +556,78 @@
           "tags",
           "capacity",
           "enrolled"
-        ]
+        ],
+        "additionalProperties": false
+      },
+      "CourseList": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "code": {
+              "type": "string"
+            },
+            "name": {
+              "type": "string"
+            },
+            "description": {
+              "type": "string"
+            },
+            "credits": {
+              "type": "integer",
+              "minimum": -9007199254740991,
+              "maximum": 9007199254740991
+            },
+            "instructorId": {
+              "type": "string"
+            },
+            "semester": {
+              "type": "string",
+              "enum": [
+                "fall",
+                "spring"
+              ]
+            },
+            "year": {
+              "type": "integer",
+              "minimum": -9007199254740991,
+              "maximum": 9007199254740991
+            },
+            "tags": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "capacity": {
+              "type": "integer",
+              "minimum": -9007199254740991,
+              "maximum": 9007199254740991
+            },
+            "enrolled": {
+              "type": "integer",
+              "minimum": -9007199254740991,
+              "maximum": 9007199254740991
+            }
+          },
+          "required": [
+            "id",
+            "code",
+            "name",
+            "description",
+            "credits",
+            "instructorId",
+            "semester",
+            "year",
+            "tags",
+            "capacity",
+            "enrolled"
+          ],
+          "additionalProperties": false
+        }
       },
       "CreateCourseBody": {
         "type": "object",
@@ -179,12 +669,12 @@
             "maximum": 2100
           },
           "tags": {
+            "minItems": 1,
             "type": "array",
             "items": {
               "type": "string",
               "minLength": 1
-            },
-            "minItems": 1
+            }
           },
           "capacity": {
             "type": "integer",
@@ -202,7 +692,8 @@
           "year",
           "tags",
           "capacity"
-        ]
+        ],
+        "additionalProperties": false
       },
       "Instructor": {
         "type": "object",
@@ -218,7 +709,8 @@
           },
           "email": {
             "type": "string",
-            "format": "email"
+            "format": "email",
+            "pattern": "^(?!\\.)(?!.*\\.\\.)([A-Za-z0-9_'+\\-\\.]*)[A-Za-z0-9_+-]@([A-Za-z0-9][A-Za-z0-9\\-]*\\.)+[A-Za-z]{2,}$"
           },
           "department": {
             "type": "string"
@@ -237,7 +729,48 @@
           "email",
           "department",
           "courseIds"
-        ]
+        ],
+        "additionalProperties": false
+      },
+      "InstructorList": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "firstName": {
+              "type": "string"
+            },
+            "lastName": {
+              "type": "string"
+            },
+            "email": {
+              "type": "string",
+              "format": "email",
+              "pattern": "^(?!\\.)(?!.*\\.\\.)([A-Za-z0-9_'+\\-\\.]*)[A-Za-z0-9_+-]@([A-Za-z0-9][A-Za-z0-9\\-]*\\.)+[A-Za-z]{2,}$"
+            },
+            "department": {
+              "type": "string"
+            },
+            "courseIds": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "required": [
+            "id",
+            "firstName",
+            "lastName",
+            "email",
+            "department",
+            "courseIds"
+          ],
+          "additionalProperties": false
+        }
       },
       "CreateInstructorBody": {
         "type": "object",
@@ -260,347 +793,8 @@
           "lastName",
           "email",
           "department"
-        ]
-      }
-    },
-    "parameters": {}
-  },
-  "paths": {
-    "/students": {
-      "get": {
-        "tags": [
-          "Students"
         ],
-        "operationId": "getStudents",
-        "description": "Returns all students. Optionally filter by enrolled course.",
-        "parameters": [
-          {
-            "schema": {
-              "type": "string"
-            },
-            "required": false,
-            "name": "courseId",
-            "in": "query"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "List of students",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Student"
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "post": {
-        "tags": [
-          "Students"
-        ],
-        "operationId": "createStudent",
-        "description": "Creates a new student. Validates email format and UCO (must be exactly 6 digits).",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreateStudentBody"
-              }
-            }
-          }
-        },
-        "responses": {
-          "201": {
-            "description": "Student created",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Student"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/students/{id}": {
-      "get": {
-        "tags": [
-          "Students"
-        ],
-        "operationId": "getStudentById",
-        "description": "Returns a single student by ID.",
-        "parameters": [
-          {
-            "schema": {
-              "type": "string"
-            },
-            "required": true,
-            "name": "id",
-            "in": "path"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "The student",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Student"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Student not found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/courses": {
-      "get": {
-        "tags": [
-          "Courses"
-        ],
-        "operationId": "getCourses",
-        "description": "Returns all courses. Supports optional filtering via query parameters.",
-        "parameters": [
-          {
-            "schema": {
-              "type": "string",
-              "enum": [
-                "fall",
-                "spring"
-              ]
-            },
-            "required": false,
-            "name": "semester",
-            "in": "query"
-          },
-          {
-            "schema": {
-              "type": "string"
-            },
-            "required": false,
-            "name": "tags",
-            "in": "query"
-          },
-          {
-            "schema": {
-              "type": "integer",
-              "nullable": true
-            },
-            "required": false,
-            "name": "minCredits",
-            "in": "query"
-          },
-          {
-            "schema": {
-              "type": "integer",
-              "nullable": true
-            },
-            "required": false,
-            "name": "maxCredits",
-            "in": "query"
-          },
-          {
-            "schema": {
-              "type": "string"
-            },
-            "required": false,
-            "name": "instructorId",
-            "in": "query"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "List of courses",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Course"
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "post": {
-        "tags": [
-          "Courses"
-        ],
-        "operationId": "createCourse",
-        "description": "Creates a new course. The request body is validated by Zod.",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreateCourseBody"
-              }
-            }
-          }
-        },
-        "responses": {
-          "201": {
-            "description": "Course created",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Course"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/courses/{id}": {
-      "get": {
-        "tags": [
-          "Courses"
-        ],
-        "operationId": "getCourseById",
-        "description": "Returns a single course by its ID.",
-        "parameters": [
-          {
-            "schema": {
-              "type": "string"
-            },
-            "required": true,
-            "name": "id",
-            "in": "path"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "The course",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Course"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Course not found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/instructors": {
-      "get": {
-        "tags": [
-          "Instructors"
-        ],
-        "operationId": "getInstructors",
-        "description": "Returns all instructors.",
-        "responses": {
-          "200": {
-            "description": "List of instructors",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Instructor"
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "post": {
-        "tags": [
-          "Instructors"
-        ],
-        "operationId": "createInstructor",
-        "description": "Creates a new instructor.",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreateInstructorBody"
-              }
-            }
-          }
-        },
-        "responses": {
-          "201": {
-            "description": "Instructor created",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Instructor"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/instructors/{id}": {
-      "get": {
-        "tags": [
-          "Instructors"
-        ],
-        "operationId": "getInstructorById",
-        "description": "Returns a single instructor by ID.",
-        "parameters": [
-          {
-            "schema": {
-              "type": "string"
-            },
-            "required": true,
-            "name": "id",
-            "in": "path"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "The instructor",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Instructor"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Instructor not found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          }
-        }
+        "additionalProperties": false
       }
     }
   }

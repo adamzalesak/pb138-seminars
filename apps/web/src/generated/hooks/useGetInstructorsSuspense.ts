@@ -10,7 +10,7 @@ import type { QueryKey, QueryClient, UseSuspenseQueryOptions, UseSuspenseQueryRe
 import { getInstructors } from "../clients/getInstructors.ts";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 
-export const getInstructorsSuspenseQueryKey = () => [{ url: '/instructors' }] as const
+export const getInstructorsSuspenseQueryKey = () => [{ url: '/instructors/' }] as const
 
 export type GetInstructorsSuspenseQueryKey = ReturnType<typeof getInstructorsSuspenseQueryKey>
 
@@ -28,7 +28,7 @@ export function getInstructorsSuspenseQueryOptions(config: Partial<RequestConfig
 
 /**
  * @description Returns all instructors.
- * {@link /instructors}
+ * {@link /instructors/}
  */
 export function useGetInstructorsSuspense<TData = GetInstructorsQueryResponse, TQueryKey extends QueryKey = GetInstructorsSuspenseQueryKey>(options: 
 {

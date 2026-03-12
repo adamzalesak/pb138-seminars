@@ -10,7 +10,7 @@ import type { QueryKey, QueryClient, QueryObserverOptions, UseQueryResult } from
 import { getInstructors } from "../clients/getInstructors.ts";
 import { queryOptions, useQuery } from "@tanstack/react-query";
 
-export const getInstructorsQueryKey = () => [{ url: '/instructors' }] as const
+export const getInstructorsQueryKey = () => [{ url: '/instructors/' }] as const
 
 export type GetInstructorsQueryKey = ReturnType<typeof getInstructorsQueryKey>
 
@@ -28,7 +28,7 @@ export function getInstructorsQueryOptions(config: Partial<RequestConfig> & { cl
 
 /**
  * @description Returns all instructors.
- * {@link /instructors}
+ * {@link /instructors/}
  */
 export function useGetInstructors<TData = GetInstructorsQueryResponse, TQueryData = GetInstructorsQueryResponse, TQueryKey extends QueryKey = GetInstructorsQueryKey>(options: 
 {

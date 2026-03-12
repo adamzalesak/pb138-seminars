@@ -8,13 +8,13 @@ import type { RequestConfig, ResponseErrorConfig } from "../../lib/axios";
 import type { GetCoursesQueryResponse, GetCoursesQueryParams } from "../types/GetCourses.ts";
 
 function getGetCoursesUrl() {
-  const res = { method: 'GET', url: `/courses` as const }  
+  const res = { method: 'GET', url: `/courses/` as const }  
   return res
 }
 
 /**
  * @description Returns all courses. Supports optional filtering via query parameters.
- * {@link /courses}
+ * {@link /courses/}
  */
 export async function getCourses(params?: GetCoursesQueryParams, config: Partial<RequestConfig> & { client?: typeof fetch } = {}) {
   const { client: request = fetch, ...requestConfig } = config  

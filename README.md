@@ -1,6 +1,6 @@
 # PB138 – REST API Assignment
 
-A full-stack TypeScript monorepo. The backend is a **Hono** REST API with **@hono/zod-openapi**; the frontend is a **React + Vite** app that consumes it via generated React Query hooks.
+A full-stack TypeScript monorepo. The backend is an **Elysia** REST API with **Zod** validation and auto-generated **OpenAPI** docs; the frontend is a **React + Vite** app that consumes it via generated React Query hooks.
 
 ## Prerequisites
 
@@ -39,7 +39,7 @@ To target a single package: `bun run --filter server dev`, `bun run --filter web
 
 ```
 apps/
-  server/   Hono REST API
+  server/   Elysia REST API
   web/      React + Vite frontend
 ```
 
@@ -53,20 +53,20 @@ Each module (`students`, `courses`, `instructors`) has the same file structure:
 | **Schema** | `*.schema.ts` | Zod schemas for request validation and OpenAPI spec generation |
 | **Repository** | `*.repository.ts` | Data access (in-memory array) |
 | **Service** | `*.service.ts` | Business logic (filtering, transformations) |
-| **Routes** | `*.routes.ts` | HTTP layer: route definitions + handlers via `@hono/zod-openapi` |
+| **Routes** | `*.routes.ts` | HTTP layer: route definitions + handlers via Elysia |
 
 Request flow: **HTTP request → Routes → Service → Repository**
 
 Dependencies flow one way:
 - `types` ← `service`, `repository` (domain layer — no external deps)
-- `schema` ← `routes` (API layer — depends on `@hono/zod-openapi`)
+- `schema` ← `routes` (API layer — depends on Zod)
 - Services and repositories know nothing about Zod or HTTP.
 
 ### Code generation
 
 `bun run generate` runs two steps (via Turbo):
 
-1. **Server** — imports the Hono app and writes the OpenAPI spec to `apps/server/openapi.json`
+1. **Server** — starts the Elysia app, fetches the OpenAPI spec from the swagger endpoint, and writes it to `apps/server/openapi.json`
 2. **Web** — kubb reads `openapi.json` and produces `apps/web/src/generated/` (TypeScript types, axios clients, React Query hooks)
 
 Both outputs are checked into git. Running `bun run dev` regenerates them once before starting the servers. If you change the API (routes, schemas), run `bun run generate` manually to update them.

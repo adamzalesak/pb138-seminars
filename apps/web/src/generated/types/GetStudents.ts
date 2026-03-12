@@ -3,7 +3,7 @@
 * Do not edit manually.
 */
 
-import type { Student } from "./Student.ts";
+import type { StudentList } from "./StudentList.ts";
 
 export type GetStudentsQueryParams = {
     /**
@@ -13,9 +13,9 @@ export type GetStudentsQueryParams = {
 };
 
 /**
- * @description List of students
+ * @description Response for status 200
 */
-export type GetStudents200 = Student[];
+export type GetStudents200 = StudentList;
 
 export type GetStudentsQueryResponse = GetStudents200;
 

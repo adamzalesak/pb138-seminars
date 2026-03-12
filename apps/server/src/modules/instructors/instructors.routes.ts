@@ -1,101 +1,49 @@
-import { createRoute, OpenAPIHono, z } from "@hono/zod-openapi";
-import {
-  CreateInstructorBodySchema,
-  InstructorSchema,
-} from "./instructor.schema";
-import * as instructorsService from "./instructors.service";
-import { ErrorResponseSchema } from "../../types";
+import { Elysia } from 'elysia'
+import { z } from 'zod'
+import { CreateInstructorBodySchema, InstructorSchema } from './instructor.schema'
+import { ErrorResponseSchema } from '../../types'
+import * as instructorsService from './instructors.service'
 
-export const instructorsRouter = new OpenAPIHono();
+export const instructorsRouter = new Elysia({ prefix: '/instructors', tags: ['Instructors'] })
+  .model({
+    Instructor: InstructorSchema,
+    InstructorList: z.array(InstructorSchema),
+    CreateInstructorBody: CreateInstructorBodySchema,
+    ErrorResponse: ErrorResponseSchema,
+  })
 
-// GET /instructors
-instructorsRouter.openapi(
-  createRoute({
-    method: "get",
-    path: "/",
-    tags: ["Instructors"],
-    operationId: "getInstructors",
-    description: "Returns all instructors.",
-    responses: {
-      200: {
-        description: "List of instructors",
-        content: {
-          "application/json": { schema: z.array(InstructorSchema) },
-        },
-      },
+  // GET /instructors
+  .get('/', () => {
+    return instructorsService.getAll()
+  }, {
+    response: { 200: 'InstructorList' },
+    detail: {
+      description: 'Returns all instructors.',
     },
-  }),
-  (c) => {
-    const instructors = instructorsService.getAll();
-    return c.json(instructors, 200);
-  },
-);
+  })
 
-// GET /instructors/:id
-instructorsRouter.openapi(
-  createRoute({
-    method: "get",
-    path: "/{id}",
-    tags: ["Instructors"],
-    operationId: "getInstructorById",
-    description: "Returns a single instructor by ID.",
-    request: {
-      params: z.object({ id: z.string() }),
-    },
-    responses: {
-      200: {
-        description: "The instructor",
-        content: {
-          "application/json": { schema: InstructorSchema },
-        },
-      },
-      404: {
-        description: "Instructor not found",
-        content: {
-          "application/json": { schema: ErrorResponseSchema },
-        },
-      },
-    },
-  }),
-  (c) => {
-    const { id } = c.req.valid("param");
-    const instructor = instructorsService.getById(id);
-
+  // GET /instructors/:id
+  .get('/:id', ({ params: { id }, set }) => {
+    const instructor = instructorsService.getById(id)
     if (!instructor) {
-      return c.json({ message: `Instructor with id '${id}' not found` }, 404);
+      set.status = 404
+      return { message: `Instructor with id '${id}' not found` }
     }
-
-    return c.json(instructor, 200);
-  },
-);
-
-// POST /instructors
-instructorsRouter.openapi(
-  createRoute({
-    method: "post",
-    path: "/",
-    tags: ["Instructors"],
-    operationId: "createInstructor",
-    description: "Creates a new instructor.",
-    request: {
-      body: {
-        content: {
-          "application/json": { schema: CreateInstructorBodySchema },
-        },
-      },
+    return instructor
+  }, {
+    response: { 200: 'Instructor', 404: 'ErrorResponse' },
+    detail: {
+      description: 'Returns a single instructor by ID.',
     },
-    responses: {
-      201: {
-        description: "Instructor created",
-        content: {
-          "application/json": { schema: InstructorSchema },
-        },
-      },
+  })
+
+  // POST /instructors
+  .post('/', ({ body }) => {
+    return instructorsService.create(body)
+  }, {
+    body: 'CreateInstructorBody',
+    response: { 200: 'Instructor' },
+    detail: {
+      description: 'Creates a new instructor.',
     },
-  }),
-  (c) => {
-    const body = c.req.valid("json");
-    const instructor = instructorsService.create(body);
-    return c.json(instructor, 201);
-  },
-);
+  })

@@ -3,7 +3,7 @@
 * Do not edit manually.
 */
 
-import type { Course } from "./Course.ts";
+import type { CourseList } from "./CourseList.ts";
 
 export const getCoursesQueryParamsSemesterEnum = {
     "fall": "fall",
@@ -22,13 +22,17 @@ export type GetCoursesQueryParams = {
     */
     tags?: string;
     /**
-     * @type integer
+     * @minLength -9007199254740991
+     * @maxLength 9007199254740991
+     * @type integer | undefined
     */
-    minCredits?: number | null;
+    minCredits?: number;
     /**
-     * @type integer
+     * @minLength -9007199254740991
+     * @maxLength 9007199254740991
+     * @type integer | undefined
     */
-    maxCredits?: number | null;
+    maxCredits?: number;
     /**
      * @type string | undefined
     */
@@ -36,9 +40,9 @@ export type GetCoursesQueryParams = {
 };
 
 /**
- * @description List of courses
+ * @description Response for status 200
 */
-export type GetCourses200 = Course[];
+export type GetCourses200 = CourseList;
 
 export type GetCoursesQueryResponse = GetCourses200;
 

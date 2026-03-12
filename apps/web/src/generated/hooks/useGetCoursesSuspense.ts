@@ -10,7 +10,7 @@ import type { QueryKey, QueryClient, UseSuspenseQueryOptions, UseSuspenseQueryRe
 import { getCourses } from "../clients/getCourses.ts";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 
-export const getCoursesSuspenseQueryKey = (params?: GetCoursesQueryParams) => [{ url: '/courses' }, ...(params ? [params] : [])] as const
+export const getCoursesSuspenseQueryKey = (params?: GetCoursesQueryParams) => [{ url: '/courses/' }, ...(params ? [params] : [])] as const
 
 export type GetCoursesSuspenseQueryKey = ReturnType<typeof getCoursesSuspenseQueryKey>
 
@@ -28,7 +28,7 @@ export function getCoursesSuspenseQueryOptions(params?: GetCoursesQueryParams, c
 
 /**
  * @description Returns all courses. Supports optional filtering via query parameters.
- * {@link /courses}
+ * {@link /courses/}
  */
 export function useGetCoursesSuspense<TData = GetCoursesQueryResponse, TQueryKey extends QueryKey = GetCoursesSuspenseQueryKey>(params?: GetCoursesQueryParams, options: 
 {

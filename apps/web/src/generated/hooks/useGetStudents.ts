@@ -10,7 +10,7 @@ import type { QueryKey, QueryClient, QueryObserverOptions, UseQueryResult } from
 import { getStudents } from "../clients/getStudents.ts";
 import { queryOptions, useQuery } from "@tanstack/react-query";
 
-export const getStudentsQueryKey = (params?: GetStudentsQueryParams) => [{ url: '/students' }, ...(params ? [params] : [])] as const
+export const getStudentsQueryKey = (params?: GetStudentsQueryParams) => [{ url: '/students/' }, ...(params ? [params] : [])] as const
 
 export type GetStudentsQueryKey = ReturnType<typeof getStudentsQueryKey>
 
@@ -28,7 +28,7 @@ export function getStudentsQueryOptions(params?: GetStudentsQueryParams, config:
 
 /**
  * @description Returns all students. Optionally filter by enrolled course.
- * {@link /students}
+ * {@link /students/}
  */
 export function useGetStudents<TData = GetStudentsQueryResponse, TQueryData = GetStudentsQueryResponse, TQueryKey extends QueryKey = GetStudentsQueryKey>(params?: GetStudentsQueryParams, options: 
 {
