@@ -8,7 +8,7 @@ import { instructorsRouter } from './modules/instructors/instructors.routes'
 
 export function createApp() {
   const app = new Elysia()
-    .use(cors())
+    .use(cors({ origin: ['http://localhost:5173', 'http://localhost:3000'] }))
     .use(
       openapi({
         path: '/api-docs',
