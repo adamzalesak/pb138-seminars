@@ -28,13 +28,15 @@ const instructors: Instructor[] = [
   },
 ]
 
-export const findAll = (): Instructor[] => [...instructors]
+const findAll = (): Instructor[] => [...instructors]
 
-export const findById = (id: string): Instructor | undefined =>
+const findById = (id: string): Instructor | undefined =>
   instructors.find((i) => i.id === id)
 
-export const create = (body: CreateInstructor): Instructor => {
+const create = (body: CreateInstructor): Instructor => {
   const newInstructor: Instructor = { ...body, id: randomUUID(), courseIds: [] }
   instructors.push(newInstructor)
   return newInstructor
 }
+
+export const instructorsRepository = { findAll, findById, create }

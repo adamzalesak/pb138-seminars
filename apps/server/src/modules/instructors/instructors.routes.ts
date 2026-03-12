@@ -2,7 +2,7 @@ import { Elysia } from 'elysia'
 import { z } from 'zod'
 import { CreateInstructorBodySchema, InstructorSchema } from './instructor.schema'
 import { ErrorResponseSchema } from '../../types'
-import * as instructorsService from './instructors.service'
+import { instructorsService } from './instructors.service'
 
 export const instructorsRouter = new Elysia({ prefix: '/instructors', tags: ['Instructors'] })
   .model({

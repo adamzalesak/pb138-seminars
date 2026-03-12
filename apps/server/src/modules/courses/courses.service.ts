@@ -1,7 +1,7 @@
 import type { CourseFilter, CreateCourse } from './course.types'
-import * as coursesRepository from './courses.repository'
+import { coursesRepository } from './courses.repository'
 
-export const getAll = (filter?: CourseFilter) => {
+const getAll = (filter?: CourseFilter) => {
   let result = coursesRepository.findAll()
 
   // TODO 1a: If filter.semester is set, keep only courses with a matching semester.
@@ -17,8 +17,10 @@ export const getAll = (filter?: CourseFilter) => {
   return result
 }
 
-export const getById = (id: string) =>
+const getById = (id: string) =>
   coursesRepository.findById(id)
 
-export const create = (body: CreateCourse) =>
+const create = (body: CreateCourse) =>
   coursesRepository.create(body)
+
+export const coursesService = { getAll, getById, create }

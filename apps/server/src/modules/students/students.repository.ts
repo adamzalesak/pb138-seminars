@@ -100,7 +100,7 @@ const students: Student[] = [
   },
 ]
 
-export const findAll = (filter?: StudentFilter): Student[] => {
+const findAll = (filter?: StudentFilter): Student[] => {
   let result = [...students]
 
   if (filter?.courseId) {
@@ -110,11 +110,13 @@ export const findAll = (filter?: StudentFilter): Student[] => {
   return result
 }
 
-export const findById = (id: string): Student | undefined =>
+const findById = (id: string): Student | undefined =>
   students.find((s) => s.id === id)
 
-export const create = (body: CreateStudent): Student => {
+const create = (body: CreateStudent): Student => {
   const newStudent: Student = { ...body, id: randomUUID(), enrolledCourseIds: [] }
   students.push(newStudent)
   return newStudent
 }
+
+export const studentsRepository = { findAll, findById, create }

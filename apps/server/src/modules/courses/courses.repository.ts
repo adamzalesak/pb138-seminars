@@ -69,13 +69,15 @@ const courses: Course[] = [
   },
 ]
 
-export const findAll = (): Course[] => [...courses]
+const findAll = (): Course[] => [...courses]
 
-export const findById = (id: string): Course | undefined =>
+const findById = (id: string): Course | undefined =>
   courses.find((c) => c.id === id)
 
-export const create = (body: CreateCourse): Course => {
+const create = (body: CreateCourse): Course => {
   const newCourse: Course = { ...body, id: randomUUID(), enrolled: 0 }
   courses.push(newCourse)
   return newCourse
 }
+
+export const coursesRepository = { findAll, findById, create }

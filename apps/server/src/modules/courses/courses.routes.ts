@@ -2,7 +2,7 @@ import { Elysia } from 'elysia'
 import { z } from 'zod'
 import { CourseQuerySchema, CourseSchema, CreateCourseBodySchema } from './course.schema'
 import { ErrorResponseSchema } from '../../types'
-import * as coursesService from './courses.service'
+import { coursesService } from './courses.service'
 
 export const coursesRouter = new Elysia({ prefix: '/courses', tags: ['Courses'] })
   .model({

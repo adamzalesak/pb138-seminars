@@ -19,7 +19,7 @@ bun run dev
 | URL | What |
 |---|---|
 | http://localhost:3000 | REST API |
-| http://localhost:3000/api-docs | Swagger UI — explore and test all endpoints |
+| http://localhost:3000/api-docs | Scalar API docs — explore and test all endpoints |
 | http://localhost:5173 | React frontend |
 
 ## Scripts
@@ -66,7 +66,7 @@ Dependencies flow one way:
 
 `bun run generate` runs two steps (via Turbo):
 
-1. **Server** — starts the Elysia app, fetches the OpenAPI spec from the swagger endpoint, and writes it to `apps/server/openapi.json`
+1. **Server** — starts the Elysia app, fetches the OpenAPI spec from the `/api-docs/json` endpoint, and writes it to `apps/server/openapi.json`
 2. **Web** — kubb reads `openapi.json` and produces `apps/web/src/generated/` (TypeScript types, axios clients, React Query hooks)
 
 Both outputs are checked into git. Running `bun run dev` regenerates them once before starting the servers. If you change the API (routes, schemas), run `bun run generate` manually to update them.
@@ -132,7 +132,7 @@ Add a semester filter to the courses page:
 
 1. `bun run dev`
 2. Open http://localhost:3000/api-docs
-3. Test your backend endpoints in Swagger UI:
+3. Test your backend endpoints in Scalar:
    - **Task 1:** Try `GET /courses` with different query parameters (`semester`, `tags`, `minCredits`, etc.)
    - **Task 2:** Try `POST /instructors` with both valid and invalid bodies — check that validation rejects bad input
 4. Open http://localhost:5173
