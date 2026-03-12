@@ -1,12 +1,9 @@
-// This page demonstrates how to use generated query options with React Query.
+// This page demonstrates how to use generated hooks from the OpenAPI spec.
 //
-// Kubb generates `getCoursesQueryOptions` from the OpenAPI spec:
+// Kubb generates `useGetCourses` from the OpenAPI spec:
 //   src/generated/hooks/useGetCourses.ts
-//
-// We pass it to `useQuery` from @tanstack/react-query to fetch data.
 
-import { useQuery } from '@tanstack/react-query'
-import { getCoursesQueryOptions } from '../generated/hooks/useGetCourses'
+import { useGetCourses } from '../generated/hooks/useGetCourses'
 import type { Course } from '../generated/types/Course'
 
 function CourseCard({ course }: { course: Course }) {
@@ -61,16 +58,16 @@ function CourseCard({ course }: { course: Course }) {
 }
 
 export function CoursesPage() {
-  const { data: courses, isLoading, isError } = useQuery(getCoursesQueryOptions())
+  const { data: courses, isLoading, isError } = useGetCourses()
 
   // TODO 3b: Add a semester filter.
   //
   // 1. Create a state variable for the selected semester (useState)
-  // 2. Pass it to the query: useQuery(getCoursesQueryOptions({ semester: ... }))
+  // 2. Pass it to the hook: useGetCourses({ semester: ... })
   // 3. Render a Select (from @/components/ui/select) above the course grid
   //    with options: All semesters / Spring / Fall
   //
-  // React Query will automatically refetch when the query key changes.
+  // The hook will automatically refetch when the parameters change.
 
   if (isLoading) {
     return <p>Loading courses…</p>

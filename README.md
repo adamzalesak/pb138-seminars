@@ -113,11 +113,11 @@ Reference: `create` in `apps/server/src/modules/students/students.service.ts`
 
 ### Task 3 — Frontend integration
 
-The React frontend uses React Query with generated query options from the OpenAPI spec. `CoursesPage.tsx` is the **reference** — read it first.
+The React frontend uses generated React Query hooks from the OpenAPI spec. `CoursesPage.tsx` is the **reference** — read it first.
 
 **Task 3a — Student list** (`apps/web/src/pages/StudentsPage.tsx`)
 
-Display all students by calling `useQuery` with `getStudentsQueryOptions()`. Handle loading/error states and render each student's name, email, and UCO.
+Display all students by calling `useGetStudents()`. Handle loading/error states and render each student's name, email, and UCO.
 
 Reference: `CoursesPage.tsx` — same pattern, different entity.
 
@@ -125,8 +125,24 @@ Reference: `CoursesPage.tsx` — same pattern, different entity.
 
 Add a semester filter to the courses page:
 1. Add a `semester` state variable (`useState`)
-2. Pass it to `getCoursesQueryOptions({ semester: ... })`
+2. Pass it to the hook: `useGetCourses({ semester: ... })`
 3. Render a `Select` (from `@/components/ui/select`) above the course grid with options: All semesters / Spring / Fall
+
+### Task 4 — Create student form
+
+**File:** `apps/web/src/pages/StudentsPage.tsx`
+
+Add a form below the student list that creates a new student via the API. This teaches you how to **send data** (not just read it) and keep the UI in sync.
+
+1. Create state variables for `firstName`, `lastName`, `email`, and `uco` (`useState`)
+2. Create a mutation using the generated `usePostStudents` hook with an `onSuccess` callback that invalidates the student list cache (`queryClient.invalidateQueries`) and resets the form fields
+3. Build a `<form>` with four `Input` fields (from `@/components/ui/input`) and a submit `Button` (from `@/components/ui/button`)
+4. On submit, call `mutation.mutate({ data: { firstName, lastName, email, uco } })`
+5. Display `mutation.error` below the form when the server rejects the input (e.g. invalid UCO format)
+
+All imports you need (`useQueryClient`, `usePostStudents`, `getStudentsQueryKey`) are already at the top of the file.
+
+Reference: The TODO comment in `StudentsPage.tsx` contains a code skeleton for the mutation setup.
 
 ### Verifying your work
 
@@ -139,3 +155,4 @@ Add a semester filter to the courses page:
 5. Test your frontend changes:
    - **Task 3a:** Student list should display below the courses
    - **Task 3b:** Semester dropdown should filter the course list
+   - **Task 4:** Submit the form with valid data — the student should appear in the list. Submit with an invalid UCO (e.g. `abc`) — an error should appear
