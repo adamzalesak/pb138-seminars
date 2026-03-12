@@ -7,12 +7,7 @@ const getAll = () =>
 const getById = (id: string) =>
   instructorsRepository.findById(id)
 
-// TODO 2b: Implement this function.
-//          Pass the data to instructorsRepository.create() and return the result.
-//
-//          Reference: students.service.ts → create
-const create = (body: CreateInstructor) => {
-  throw new Error('Not implemented')
-}
+const create = (body: CreateInstructor) =>
+  instructorsRepository.create(body)
 
 export const instructorsService = { getAll, getById, create }

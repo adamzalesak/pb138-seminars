@@ -9,17 +9,9 @@ export const InstructorSchema = z.object({
   courseIds: z.array(z.string()),
 })
 
-// TODO 2a: Add validation constraints to this schema.
-//          Currently it accepts any strings — add proper constraints:
-//          - firstName: non-empty, max 50 characters
-//          - lastName: non-empty, max 50 characters
-//          - email: valid email format
-//          - department: non-empty
-//
-//          Reference: CreateStudentBodySchema in student.schema.ts
 export const CreateInstructorBodySchema = z.object({
-  firstName: z.string(),
-  lastName: z.string(),
-  email: z.string(),
-  department: z.string(),
+  firstName: z.string().min(1).max(50),
+  lastName: z.string().min(1).max(50),
+  email: z.email(),
+  department: z.string().min(1),
 })

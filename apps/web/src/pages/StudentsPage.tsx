@@ -1,44 +1,74 @@
+import { useState } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
 import { useGetStudents, getStudentsQueryKey } from '../generated/hooks/useGetStudents'
 import { usePostStudents } from '../generated/hooks/usePostStudents'
+import { Input } from '@/components/ui/input'
+import { Button } from '@/components/ui/button'
 
 export function StudentsPage() {
-  // TODO 3a: Fetch and display students.
-  //
-  // 1. Call useGetStudents() to get { data, isLoading, isError }
-  //    (same pattern as CoursesPage uses useGetCourses)
-  // 2. Handle loading and error states
-  // 3. Render each student's name (firstName + lastName), email, and UCO
-  //
-  // Reference: CoursesPage.tsx
+  const { data: students, isLoading, isError } = useGetStudents()
 
-  // TODO 4: Add a form to create a new student.
-  //
-  // 1. Create state variables for firstName, lastName, email, and uco (useState)
-  // 2. Get the query client: const queryClient = useQueryClient()
-  // 3. Create a mutation using the generated hook:
-  //      const mutation = usePostStudents({
-  //        mutation: {
-  //          onSuccess: () => {
-  //            queryClient.invalidateQueries({ queryKey: getStudentsQueryKey() })
-  //            // reset form fields here
-  //          },
-  //        },
-  //      })
-  // 4. Build a <form> with four Input fields (from @/components/ui/input)
-  //    and a submit Button (from @/components/ui/button)
-  // 5. On submit, call mutation.mutate({ data: { firstName, lastName, email, uco } })
-  // 6. Show mutation.error below the form when submission fails
-  //    (e.g. the server rejects an invalid UCO format)
-  //
-  // Imports you need (useQueryClient, usePostStudents, getStudentsQueryKey)
-  // are already at the top of this file.
+  const [firstName, setFirstName] = useState('')
+  const [lastName, setLastName] = useState('')
+  const [email, setEmail] = useState('')
+  const [uco, setUco] = useState('')
+
+  const queryClient = useQueryClient()
+
+  const mutation = usePostStudents({
+    mutation: {
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: getStudentsQueryKey() })
+        setFirstName('')
+        setLastName('')
+        setEmail('')
+        setUco('')
+      },
+    },
+  })
+
+  if (isLoading) {
+    return <p>Loading students…</p>
+  }
+
+  if (isError) {
+    return <p className="text-destructive">Failed to load students. Is the server running?</p>
+  }
 
   return (
     <div>
       <h2 className="mb-6">Students</h2>
-      {/* Replace this with your implementation */}
-      <p>Not implemented yet.</p>
+
+      <div className="mb-8 flex flex-col gap-3">
+        {students?.map((student) => (
+          <div key={student.id} className="rounded-lg border border-border px-4 py-3">
+            <strong>{student.firstName} {student.lastName}</strong>
+            <span className="ml-2 text-sm text-muted-foreground">
+              {student.email} · UCO {student.uco}
+            </span>
+          </div>
+        ))}
+      </div>
+
+      <h3 className="mb-3">Add student</h3>
+      <form
+        onSubmit={(e) => {
+          e.preventDefault()
+          mutation.mutate({ data: { firstName, lastName, email, uco } })
+        }}
+        className="flex max-w-sm flex-col gap-2"
+      >
+        <Input placeholder="First name" value={firstName} onChange={(e) => setFirstName(e.target.value)} />
+        <Input placeholder="Last name" value={lastName} onChange={(e) => setLastName(e.target.value)} />
+        <Input placeholder="Email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
+        <Input placeholder="UCO (6 digits)" value={uco} onChange={(e) => setUco(e.target.value)} />
+        <Button type="submit" disabled={mutation.isPending}>
+          {mutation.isPending ? 'Creating…' : 'Create student'}
+        </Button>
+        {mutation.error && (
+          <p className="text-sm text-destructive">{mutation.error.message}</p>
+        )}
+      </form>
     </div>
   )
 }

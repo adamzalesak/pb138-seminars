@@ -3,8 +3,16 @@
 // Kubb generates `useGetCourses` from the OpenAPI spec:
 //   src/generated/hooks/useGetCourses.ts
 
+import { useState } from 'react'
 import { useGetCourses } from '../generated/hooks/useGetCourses'
 import type { Course } from '../generated/types/Course'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 
 function CourseCard({ course }: { course: Course }) {
   const occupancy = Math.round((course.enrolled / course.capacity) * 100)
@@ -39,16 +47,11 @@ function CourseCard({ course }: { course: Course }) {
 }
 
 export function CoursesPage() {
-  const { data: courses, isLoading, isError } = useGetCourses()
+  const [semester, setSemester] = useState<string>('all')
 
-  // TODO 3b: Add a semester filter.
-  //
-  // 1. Create a state variable for the selected semester (useState)
-  // 2. Pass it to the hook: useGetCourses({ semester: ... })
-  // 3. Render a Select (from @/components/ui/select) above the course grid
-  //    with options: All semesters / Spring / Fall
-  //
-  // The hook will automatically refetch when the parameters change.
+  const { data: courses, isLoading, isError } = useGetCourses(
+    semester === 'all' ? undefined : { semester: semester as 'fall' | 'spring' },
+  )
 
   if (isLoading) {
     return <p>Loading courses…</p>
@@ -60,7 +63,19 @@ export function CoursesPage() {
 
   return (
     <div>
-      <h1 className="mb-6">Courses</h1>
+      <div className="mb-6 flex items-center gap-4">
+        <h1 className="m-0">Courses</h1>
+        <Select value={semester} onValueChange={(v) => setSemester(v ?? 'all')}>
+          <SelectTrigger>
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All semesters</SelectItem>
+            <SelectItem value="spring">Spring</SelectItem>
+            <SelectItem value="fall">Fall</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
       <div className="grid grid-cols-[repeat(auto-fill,minmax(280px,1fr))] gap-4">
         {courses?.map((course) => (
           <CourseCard key={course.id} course={course} />
