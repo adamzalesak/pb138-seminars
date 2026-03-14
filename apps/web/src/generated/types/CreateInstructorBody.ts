@@ -6,18 +6,23 @@
 
 export type CreateInstructorBody = {
     /**
+     * @minLength 1
+     * @maxLength 50
      * @type string
     */
     firstName: string;
     /**
+     * @minLength 1
+     * @maxLength 50
      * @type string
     */
     lastName: string;
     /**
-     * @type string
+     * @type string, email
     */
     email: string;
     /**
+     * @minLength 1
      * @type string
     */
     department: string;

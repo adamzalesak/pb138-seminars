@@ -3,8 +3,8 @@
 * Do not edit manually.
 */
 
-import fetch from "../clients";
-import type { RequestConfig, ResponseErrorConfig } from "../clients";
+import fetch from "../../lib/axios";
+import type { RequestConfig, ResponseErrorConfig } from "../../lib/axios";
 import type { GetCoursesQueryResponse, GetCoursesQueryParams } from "../types/GetCourses.ts";
 import type { QueryKey, QueryClient, QueryObserverOptions, UseQueryResult } from "@tanstack/react-query";
 import { getCourses } from "../clients/getCourses.ts";

@@ -3,8 +3,8 @@
 * Do not edit manually.
 */
 
-import fetch from "../clients";
-import type { RequestConfig, ResponseErrorConfig } from "../clients";
+import fetch from "../../lib/axios";
+import type { RequestConfig, ResponseErrorConfig } from "../../lib/axios";
 import type { PostStudentsMutationRequest, PostStudentsMutationResponse } from "../types/PostStudents.ts";
 import type { UseMutationOptions, QueryClient } from "@tanstack/react-query";
 import { postStudents } from "../clients/postStudents.ts";

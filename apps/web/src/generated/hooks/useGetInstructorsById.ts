@@ -3,8 +3,8 @@
 * Do not edit manually.
 */
 
-import fetch from "../clients";
-import type { RequestConfig, ResponseErrorConfig } from "../clients";
+import fetch from "../../lib/axios";
+import type { RequestConfig, ResponseErrorConfig } from "../../lib/axios";
 import type { GetInstructorsByIdQueryResponse, GetInstructorsByIdPathParams, GetInstructorsById404 } from "../types/GetInstructorsById.ts";
 import type { QueryKey, QueryClient, QueryObserverOptions, UseQueryResult } from "@tanstack/react-query";
 import { getInstructorsById } from "../clients/getInstructorsById.ts";

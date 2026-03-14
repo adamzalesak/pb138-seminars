@@ -34,7 +34,7 @@ export default defineConfig({
     pluginReactQuery({
       output: { path: 'hooks' },
       client: {
-        importPath: '../clients',
+        importPath: '../../lib/axios',
       },
     }),
   ],
