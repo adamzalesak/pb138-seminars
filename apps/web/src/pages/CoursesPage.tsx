@@ -26,17 +26,6 @@ function CourseCard({ course }: { course: Course }) {
 
       <p className="m-0 text-sm text-muted-foreground">{course.description}</p>
 
-      <div className="flex flex-wrap gap-1.5">
-        {course.tags.map((tag) => (
-          <span
-            key={tag}
-            className="rounded bg-primary/10 px-2 py-0.5 text-xs text-primary"
-          >
-            {tag}
-          </span>
-        ))}
-      </div>
-
       <div className="text-xs text-muted-foreground">
         {course.semester.charAt(0).toUpperCase() + course.semester.slice(1)} {course.year}
         {' · '}

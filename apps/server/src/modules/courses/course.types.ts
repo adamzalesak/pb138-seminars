@@ -8,6 +8,7 @@ export interface Course {
   semester: 'fall' | 'spring'
   year: number
   capacity: number
+  enrolled: number
 }
 
 export interface CreateCourse {

@@ -1,21 +1,31 @@
+import { eq, count, getTableColumns } from 'drizzle-orm'
 import type { Database } from '../../db'
+import { courses as coursesTable, enrollments as enrollmentsTable } from '../../db/schema'
 import type { Course, CreateCourse } from './course.types'
 
-// TODO: Import the courses table from '../../db/schema'
-// TODO: Import eq from 'drizzle-orm'
-
+// This query is more complex than the others — it joins enrollments to count
+// how many students are enrolled in each course.
+// Docs: https://orm.drizzle.team/docs/joins
 const findAll = async (db: Database): Promise<Course[]> => {
-  // TODO: Select all courses from the database
-  throw new Error('Not implemented')
+  const rows = await db
+    .select({
+      ...getTableColumns(coursesTable),
+      enrolled: count(enrollmentsTable.id),
+    })
+    .from(coursesTable)
+    .leftJoin(enrollmentsTable, eq(coursesTable.id, enrollmentsTable.courseId))
+    .groupBy(coursesTable.id)
+  return rows
 }
 
 const findById = async (db: Database, id: string): Promise<Course | undefined> => {
-  // TODO: Select a course by ID, return undefined if not found
+  // TODO: Same pattern as findAll, but filtered by id. Return undefined if not found.
   throw new Error('Not implemented')
 }
 
 const create = async (db: Database, data: CreateCourse): Promise<Course> => {
-  // TODO: Insert a new course and return the created row
+  // TODO: Insert a new course and return the created row.
+  // Hint: A newly created course always has 0 enrollments.
   throw new Error('Not implemented')
 }
 

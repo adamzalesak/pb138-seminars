@@ -10,6 +10,7 @@ export const CourseSchema = z.object({
   semester: z.enum(['fall', 'spring']),
   year: z.number().int(),
   capacity: z.number().int(),
+  enrolled: z.number().int(),
 })
 
 export const CreateCourseBodySchema = z.object({
