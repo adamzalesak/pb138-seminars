@@ -7,9 +7,7 @@ export interface Course {
   instructorId: string
   semester: 'fall' | 'spring'
   year: number
-  tags: string[]
   capacity: number
-  enrolled: number
 }
 
 export interface CreateCourse {
@@ -20,13 +18,11 @@ export interface CreateCourse {
   instructorId: string
   semester: 'fall' | 'spring'
   year: number
-  tags: string[]
   capacity: number
 }
 
 export interface CourseFilter {
   semester?: 'fall' | 'spring'
-  tags?: string[]
   minCredits?: number
   maxCredits?: number
   instructorId?: string

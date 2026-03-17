@@ -4,7 +4,12 @@
   "scripts": {
     "dev": "turbo dev",
     "build": "turbo build",
-    "generate": "turbo run generate"
+    "generate": "turbo run generate",
+    "db:generate": "turbo run db:generate",
+    "db:migrate": "turbo run db:migrate",
+    "db:push": "turbo run db:push",
+    "db:studio": "turbo run db:studio",
+    "db:seed": "turbo run db:seed"
   },
   "devDependencies": {
     "turbo": "latest"

@@ -1,7 +1,10 @@
 import { z } from 'zod'
 
-export const ErrorResponseSchema = z.object({
-  message: z.string(),
+// RFC 9457 — Problem Details for HTTP APIs
+export const ProblemDetailSchema = z.object({
+  status: z.number().int(),
+  title: z.string(),
+  detail: z.string().optional(),
 })
 
-export type ErrorResponse = z.infer<typeof ErrorResponseSchema>
+export type ProblemDetail = z.infer<typeof ProblemDetailSchema>

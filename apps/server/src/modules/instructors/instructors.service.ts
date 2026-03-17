@@ -1,13 +1,14 @@
+import { db } from '../../db'
 import type { CreateInstructor } from './instructor.types'
 import { instructorsRepository } from './instructors.repository'
 
 const getAll = () =>
-  instructorsRepository.findAll()
+  instructorsRepository.findAll(db)
 
 const getById = (id: string) =>
-  instructorsRepository.findById(id)
+  instructorsRepository.findById(db, id)
 
 const create = (body: CreateInstructor) =>
-  instructorsRepository.create(body)
+  instructorsRepository.create(db, body)
 
 export const instructorsService = { getAll, getById, create }

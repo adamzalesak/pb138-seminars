@@ -108,7 +108,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
+                  "$ref": "#/components/schemas/ProblemDetail"
                 }
               }
             }
@@ -134,14 +134,6 @@
                 "fall",
                 "spring"
               ]
-            }
-          },
-          {
-            "name": "tags",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
             }
           },
           {
@@ -259,7 +251,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
+                  "$ref": "#/components/schemas/ProblemDetail"
                 }
               }
             }
@@ -360,13 +352,248 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
+                  "$ref": "#/components/schemas/ProblemDetail"
                 }
               }
             }
           }
         },
         "operationId": "getInstructorsById"
+      }
+    },
+    "/students/{id}/enroll": {
+      "post": {
+        "tags": [
+          "Enrollments"
+        ],
+        "description": "Enroll a student into multiple courses at once. Uses a transaction — all or nothing.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "courseIds": {
+                    "minItems": 1,
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "format": "uuid",
+                      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                    }
+                  }
+                },
+                "required": [
+                  "courseIds"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "courseIds": {
+                    "minItems": 1,
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "format": "uuid",
+                      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                    }
+                  }
+                },
+                "required": [
+                  "courseIds"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "courseIds": {
+                    "minItems": 1,
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "format": "uuid",
+                      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                    }
+                  }
+                },
+                "required": [
+                  "courseIds"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Response for status 200",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "enrolled": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "enrolled"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        },
+        "operationId": "postStudentsByIdEnroll"
+      }
+    },
+    "/students/{id}/transfer": {
+      "post": {
+        "tags": [
+          "Enrollments"
+        ],
+        "description": "Transfer a student from one course to another. Uses a serializable transaction to enforce capacity limits.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "fromCourseId": {
+                    "type": "string",
+                    "format": "uuid",
+                    "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                  },
+                  "toCourseId": {
+                    "type": "string",
+                    "format": "uuid",
+                    "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                  }
+                },
+                "required": [
+                  "fromCourseId",
+                  "toCourseId"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "fromCourseId": {
+                    "type": "string",
+                    "format": "uuid",
+                    "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                  },
+                  "toCourseId": {
+                    "type": "string",
+                    "format": "uuid",
+                    "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                  }
+                },
+                "required": [
+                  "fromCourseId",
+                  "toCourseId"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "fromCourseId": {
+                    "type": "string",
+                    "format": "uuid",
+                    "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                  },
+                  "toCourseId": {
+                    "type": "string",
+                    "format": "uuid",
+                    "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                  }
+                },
+                "required": [
+                  "fromCourseId",
+                  "toCourseId"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Response for status 200",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "success"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Response for status 409",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        },
+        "operationId": "postStudentsByIdTransfer"
       }
     }
   },
@@ -391,12 +618,6 @@
           },
           "uco": {
             "type": "string"
-          },
-          "enrolledCourseIds": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
           }
         },
         "required": [
@@ -404,8 +625,7 @@
           "firstName",
           "lastName",
           "email",
-          "uco",
-          "enrolledCourseIds"
+          "uco"
         ],
         "additionalProperties": false
       },
@@ -430,12 +650,6 @@
             },
             "uco": {
               "type": "string"
-            },
-            "enrolledCourseIds": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
             }
           },
           "required": [
@@ -443,8 +657,7 @@
             "firstName",
             "lastName",
             "email",
-            "uco",
-            "enrolledCourseIds"
+            "uco"
           ],
           "additionalProperties": false
         }
@@ -480,15 +693,24 @@
         ],
         "additionalProperties": false
       },
-      "ErrorResponse": {
+      "ProblemDetail": {
         "type": "object",
         "properties": {
-          "message": {
+          "status": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          },
+          "title": {
+            "type": "string"
+          },
+          "detail": {
             "type": "string"
           }
         },
         "required": [
-          "message"
+          "status",
+          "title"
         ],
         "additionalProperties": false
       },
@@ -527,18 +749,7 @@
             "minimum": -9007199254740991,
             "maximum": 9007199254740991
           },
-          "tags": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
           "capacity": {
-            "type": "integer",
-            "minimum": -9007199254740991,
-            "maximum": 9007199254740991
-          },
-          "enrolled": {
             "type": "integer",
             "minimum": -9007199254740991,
             "maximum": 9007199254740991
@@ -553,9 +764,7 @@
           "instructorId",
           "semester",
           "year",
-          "tags",
-          "capacity",
-          "enrolled"
+          "capacity"
         ],
         "additionalProperties": false
       },
@@ -596,18 +805,7 @@
               "minimum": -9007199254740991,
               "maximum": 9007199254740991
             },
-            "tags": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            },
             "capacity": {
-              "type": "integer",
-              "minimum": -9007199254740991,
-              "maximum": 9007199254740991
-            },
-            "enrolled": {
               "type": "integer",
               "minimum": -9007199254740991,
               "maximum": 9007199254740991
@@ -622,9 +820,7 @@
             "instructorId",
             "semester",
             "year",
-            "tags",
-            "capacity",
-            "enrolled"
+            "capacity"
           ],
           "additionalProperties": false
         }
@@ -668,14 +864,6 @@
             "minimum": 2000,
             "maximum": 2100
           },
-          "tags": {
-            "minItems": 1,
-            "type": "array",
-            "items": {
-              "type": "string",
-              "minLength": 1
-            }
-          },
           "capacity": {
             "type": "integer",
             "minimum": 1,
@@ -690,7 +878,6 @@
           "instructorId",
           "semester",
           "year",
-          "tags",
           "capacity"
         ],
         "additionalProperties": false
@@ -714,12 +901,6 @@
           },
           "department": {
             "type": "string"
-          },
-          "courseIds": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
           }
         },
         "required": [
@@ -727,8 +908,7 @@
           "firstName",
           "lastName",
           "email",
-          "department",
-          "courseIds"
+          "department"
         ],
         "additionalProperties": false
       },
@@ -753,12 +933,6 @@
             },
             "department": {
               "type": "string"
-            },
-            "courseIds": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
             }
           },
           "required": [
@@ -766,8 +940,7 @@
             "firstName",
             "lastName",
             "email",
-            "department",
-            "courseIds"
+            "department"
           ],
           "additionalProperties": false
         }

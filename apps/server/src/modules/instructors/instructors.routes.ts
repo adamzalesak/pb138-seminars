@@ -1,7 +1,7 @@
 import { Elysia } from 'elysia'
 import { z } from 'zod'
 import { CreateInstructorBodySchema, InstructorSchema } from './instructor.schema'
-import { ErrorResponseSchema } from '../../types'
+import { ProblemDetailSchema } from '../../types'
 import { instructorsService } from './instructors.service'
 
 export const instructorsRouter = new Elysia({ prefix: '/instructors', tags: ['Instructors'] })
@@ -9,11 +9,11 @@ export const instructorsRouter = new Elysia({ prefix: '/instructors', tags: ['In
     Instructor: InstructorSchema,
     InstructorList: z.array(InstructorSchema),
     CreateInstructorBody: CreateInstructorBodySchema,
-    ErrorResponse: ErrorResponseSchema,
+    ProblemDetail: ProblemDetailSchema,
   })
 
   // GET /instructors
-  .get('/', () => {
+  .get('/', async () => {
     return instructorsService.getAll()
   }, {
     response: { 200: 'InstructorList' },
@@ -23,22 +23,22 @@ export const instructorsRouter = new Elysia({ prefix: '/instructors', tags: ['In
   })
 
   // GET /instructors/:id
-  .get('/:id', ({ params: { id }, set }) => {
-    const instructor = instructorsService.getById(id)
+  .get('/:id', async ({ params: { id }, set }) => {
+    const instructor = await instructorsService.getById(id)
     if (!instructor) {
       set.status = 404
-      return { message: `Instructor with id '${id}' not found` }
+      return { status: 404, title: 'Not Found', detail: `Instructor with id '${id}' not found` }
     }
     return instructor
   }, {
-    response: { 200: 'Instructor', 404: 'ErrorResponse' },
+    response: { 200: 'Instructor', 404: 'ProblemDetail' },
     detail: {
       description: 'Returns a single instructor by ID.',
     },
   })
 
   // POST /instructors
-  .post('/', ({ body }) => {
+  .post('/', async ({ body }) => {
     return instructorsService.create(body)
   }, {
     body: 'CreateInstructorBody',

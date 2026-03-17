@@ -6,7 +6,6 @@ export const StudentSchema = z.object({
   lastName: z.string(),
   email: z.email(),
   uco: z.string(),
-  enrolledCourseIds: z.array(z.string()),
 })
 
 export const CreateStudentBodySchema = z.object({

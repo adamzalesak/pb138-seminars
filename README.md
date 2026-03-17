@@ -1,18 +1,28 @@
-# PB138 – REST API Assignment
+# PB138 – Seminar 05: Databases & Drizzle
 
-A full-stack TypeScript monorepo. The backend is an **Elysia** REST API with **Zod** validation and auto-generated **OpenAPI** docs; the frontend is a **React + Vite** app that consumes it via generated React Query hooks.
+A TypeScript monorepo with an **Elysia** REST API connected to **PostgreSQL** via **Drizzle ORM**.
 
 ## Prerequisites
 
 - **Bun** — install from https://bun.sh
+- **Docker** — for running PostgreSQL
 
 ## Getting started
 
 ```bash
 # 1. Install dependencies
-bun install
+bun i
 
-# 2. Start both apps in watch mode
+# 2. Start PostgreSQL
+docker compose up -d
+
+# 3. Copy environment variables
+cp apps/server/.env.example apps/server/.env
+
+# 4. Apply database migrations
+bun run db:generate && bun run db:migrate
+
+# 5. Start the server in watch mode
 bun run dev
 ```
 
@@ -20,7 +30,7 @@ bun run dev
 |---|---|
 | http://localhost:3000 | REST API |
 | http://localhost:3000/api-docs | Scalar API docs — explore and test all endpoints |
-| http://localhost:5173 | React frontend |
+| https://local.drizzle.studio | Drizzle Studio — browse your database |
 
 ## Scripts
 
@@ -29,130 +39,134 @@ Run from the repo root:
 | Command | Description |
 |---|---|
 | `bun install` | Install all workspace dependencies |
-| `bun run generate` | Generate OpenAPI spec (server) and TypeScript types + React Query hooks (web) |
-| `bun run dev` | Start both apps in watch mode (runs `generate` automatically first) |
-| `bun run build` | Build all packages for production |
+| `bun run dev` | Start the server in watch mode |
+| `bun run build` | Build for production |
 
-To target a single package: `bun run --filter server dev`, `bun run --filter web dev`, etc.
+Database scripts (run from `apps/server/`):
+
+| Command | Description |
+|---|---|
+| `bun run db:generate` | Generate a migration from schema changes |
+| `bun run db:migrate` | Apply pending migrations |
+| `bun run db:studio` | Open Drizzle Studio |
+| `bun run db:seed` | Seed the database with test data |
 
 ## Project structure
 
 ```
+docker-compose.yml          PostgreSQL service
 apps/
-  server/   Elysia REST API
-  web/      React + Vite frontend
+  server/
+    drizzle.config.ts       Drizzle Kit configuration
+    drizzle/                Generated SQL migrations
+    src/
+      db/
+        schema.ts           Drizzle table definitions (source of truth)
+        index.ts            Database connection
+        seed.ts             Seed script (Faker.js)
+      modules/
+        students/           Students module (TODO)
+        courses/            Courses module (TODO)
+        instructors/        Instructors module (reference implementation)
+        enrollments/        Enrollments module (TODO — transaction)
 ```
 
 ### Backend layers
 
-Each module (`students`, `courses`, `instructors`) has the same file structure:
+Each module follows the same architecture:
 
 | Layer | File | Responsibility |
 |---|---|---|
-| **Types** | `*.types.ts` | Plain TypeScript interfaces — domain data shapes, no dependencies |
-| **Schema** | `*.schema.ts` | Zod schemas for request validation and OpenAPI spec generation |
-| **Repository** | `*.repository.ts` | Data access (in-memory array) |
-| **Service** | `*.service.ts` | Business logic (filtering, transformations) |
-| **Routes** | `*.routes.ts` | HTTP layer: route definitions + handlers via Elysia |
+| **Types** | `*.types.ts` | Plain TypeScript interfaces |
+| **Schema** | `*.schema.ts` | Zod schemas for validation and OpenAPI |
+| **Repository** | `*.repository.ts` | Data access via Drizzle — receives `db` (db instance or tx) as first argument |
+| **Service** | `*.service.ts` | Business logic, transactions, imports `db` |
+| **Routes** | `*.routes.ts` | HTTP handlers via Elysia |
 
-Request flow: **HTTP request → Routes → Service → Repository**
+Request flow: **HTTP request → Routes → Service → Repository → Database**
 
-Dependencies flow one way:
-- `types` ← `service`, `repository` (domain layer — no external deps)
-- `schema` ← `routes` (API layer — depends on Zod)
-- Services and repositories know nothing about Zod or HTTP.
-
-### Code generation
-
-`bun run generate` runs two steps (via Turbo):
-
-1. **Server** — starts the Elysia app, fetches the OpenAPI spec from the `/api-docs/json` endpoint, and writes it to `apps/server/openapi.json`
-2. **Web** — kubb reads `openapi.json` and produces `apps/web/src/generated/` (TypeScript types, axios clients, React Query hooks)
-
-Both outputs are checked into git. Running `bun run dev` regenerates them once before starting the servers. If you change the API (routes, schemas), run `bun run generate` manually to update them.
+The **instructors** module is fully implemented — use it as a reference for all tasks.
 
 ---
 
-## Student tasks
+## Tasks
 
-The **`students` module** is fully implemented and serves as a **reference**. Read through all its files before starting.
+### Task 1 — Complete the Schema
 
-### Task 1 — Course filtering
+**File:** `apps/server/src/db/schema.ts`
 
-**File:** `apps/server/src/modules/courses/courses.service.ts`
+Students and instructors tables are defined. Complete the remaining two:
 
-The `getAll` function receives a `filter` object but currently ignores it and returns all courses. Implement the four filters marked with `// TODO`:
+- **`courses`** — code, name, description, credits, instructorId (FK → instructors), semester, year, capacity
+- **`enrollments`** — studentId (FK → students), courseId (FK → courses), enrolledAt, unique constraint on (studentId, courseId)
 
-| TODO | Filter | What to do |
-|---|---|---|
-| 1a | `filter.semester` | Keep only courses matching the given semester |
-| 1b | `filter.tags` | Keep only courses that have **all** of the requested tags |
-| 1c | `filter.minCredits` / `maxCredits` | Keep only courses within the credit range (inclusive) |
-| 1d | `filter.instructorId` | Keep only courses taught by that instructor |
+Then regenerate and apply migrations:
 
-**Hint:** Each filter is a simple `if` + `Array.filter()`. Check the `students` module's repository for a similar pattern.
+```bash
+bun run db:generate
+bun run db:migrate
+```
 
-### Task 2 — Instructor creation
+**Verify:** Open Drizzle Studio (`bun run db:studio`) — all 4 tables should appear.
 
-The `POST /instructors` endpoint exists but throws `Not implemented`. You need to edit two files:
+### Task 2 — Students Repository
 
-**Step 2a — Validation** (`apps/server/src/modules/instructors/instructor.schema.ts`)
+**File:** `apps/server/src/modules/students/students.repository.ts`
 
-`CreateInstructorBodySchema` currently accepts any strings. Add validation constraints:
-- `firstName`, `lastName` — non-empty, max 50 characters
-- `email` — valid email format
-- `department` — non-empty
+Replace the stubs with Drizzle queries. Use **instructors.repository.ts** as a reference. Each method receives `db` (the database or transaction instance) as the first argument — use it instead of importing `db` directly:
 
-Reference: `CreateStudentBodySchema` in `apps/server/src/modules/students/student.schema.ts`
+| Method | Hint |
+|---|---|
+| `findAll(db)` | `db.select().from(...)` |
+| `findById(db, id)` | `.where(eq(...))`, return first or undefined |
+| `create(db, data)` | `.insert(...).values(data).returning()` |
 
-**Step 2b — Service** (`apps/server/src/modules/instructors/instructors.service.ts`)
+**Verify:** Scalar → `POST /students` to create, then `GET /students`
 
-Implement the `create` function — pass the data to `instructorsRepository.create()` and return the result.
+### Task 3 — Courses Repository
 
-Reference: `create` in `apps/server/src/modules/students/students.service.ts`
+**File:** `apps/server/src/modules/courses/courses.repository.ts`
 
-### Task 3 — Frontend integration
+Same pattern as students. Implement `findAll(db)`, `findById(db, id)`, and `create(db, data)`.
 
-The React frontend uses generated React Query hooks from the OpenAPI spec. `CoursesPage.tsx` is the **reference** — read it first.
+**Verify:** Scalar → `POST /courses` to create, then `GET /courses?semester=spring`
 
-**Task 3a — Student list** (`apps/web/src/pages/StudentsPage.tsx`)
+### Task 4 — Seed Script
 
-Display all students by calling `useGetStudents()`. Handle loading/error states and render each student's name, email, and UCO.
+**File:** `apps/server/src/db/seed.ts`
 
-Reference: `CoursesPage.tsx` — same pattern, different entity.
+Instructors & students are already seeded. Complete the script — add courses and enrollments.
 
-**Task 3b — Semester filter** (`apps/web/src/pages/CoursesPage.tsx`)
+```bash
+cd apps/server && bun run db:seed
+```
 
-Add a semester filter to the courses page:
-1. Add a `semester` state variable (`useState`)
-2. Pass it to the hook: `useGetCourses({ semester: ... })`
-3. Render a `Select` (from `@/components/ui/select`) above the course grid with options: All semesters / Spring / Fall
+**Verify:** Open Drizzle Studio — all tables should have data.
 
-### Task 4 — Create student form
+### Task 5 — Bulk Enrollment (Transaction)
 
-**File:** `apps/web/src/pages/StudentsPage.tsx`
+**Files:** `enrollments.repository.ts` (data access) + `enrollments.service.ts` (transaction)
 
-Add a form below the student list that creates a new student via the API. This teaches you how to **send data** (not just read it) and keep the UI in sync.
+Implement bulk enrollment — enroll a student into multiple courses at once.
 
-1. Create state variables for `firstName`, `lastName`, `email`, and `uco` (`useState`)
-2. Create a mutation using the generated `usePostStudents` hook with an `onSuccess` callback that invalidates the student list cache (`queryClient.invalidateQueries`) and resets the form fields
-3. Build a `<form>` with four `Input` fields (from `@/components/ui/input`) and a submit `Button` (from `@/components/ui/button`)
-4. On submit, call `mutation.mutate({ data: { firstName, lastName, email, uco } })`
-5. Display `mutation.error` below the form when the server rejects the input (e.g. invalid UCO format)
+1. **Repository** — implement `createEnrollment(db, studentId, courseId)` to insert a single enrollment row.
+2. **Service** — implement `bulkEnroll` using `db.transaction()`. Inside the callback, call `enrollmentsRepository.createEnrollment(tx, ...)` for each courseId. If any insert fails (e.g. duplicate or invalid FK), all are rolled back. Return the number of enrollments created.
 
-All imports you need (`useQueryClient`, `usePostStudents`, `getStudentsQueryKey`) are already at the top of the file.
+**Verify:** `POST /students/:id/enroll` with `{ "courseIds": ["...", "..."] }`, then check Drizzle Studio.
 
-Reference: The TODO comment in `StudentsPage.tsx` contains a code skeleton for the mutation setup.
+### Task 6 — Course Transfer (Serializable Transaction)
 
-### Verifying your work
+**Files:** `enrollments.repository.ts` (data access) + `enrollments.service.ts` (transaction)
 
-1. `bun run dev`
-2. Open http://localhost:3000/api-docs
-3. Test your backend endpoints in Scalar:
-   - **Task 1:** Try `GET /courses` with different query parameters (`semester`, `tags`, `minCredits`, etc.)
-   - **Task 2:** Try `POST /instructors` with both valid and invalid bodies — check that validation rejects bad input
-4. Open http://localhost:5173
-5. Test your frontend changes:
-   - **Task 3a:** Student list should display below the courses
-   - **Task 3b:** Semester dropdown should filter the course list
-   - **Task 4:** Submit the form with valid data — the student should appear in the list. Submit with an invalid UCO (e.g. `abc`) — an error should appear
+Implement `transferEnrollment` — transfer a student from one course to another **only if** the target course has available capacity.
+
+This must use a **serializable** transaction (`isolationLevel: 'serializable'`) because it reads the current enrollment count, compares it against the course capacity, and then writes — a classic read-then-write pattern that is vulnerable to race conditions under lower isolation levels.
+
+1. **Repository** — implement `deleteEnrollment(db, studentId, courseId)` and `countByCourse(db, courseId)`.
+2. **Service** — implement `transferEnrollment` using `db.transaction(async (tx) => { ... }, { isolationLevel: 'serializable' })`. Inside the callback, use repository methods with `tx`:
+   1. `coursesRepository.findById(tx, toCourseId)` — throw `'Target course not found'` if missing.
+   2. `enrollmentsRepository.countByCourse(tx, toCourseId)` — throw `'Target course is full'` if count ≥ capacity.
+   3. `enrollmentsRepository.deleteEnrollment(tx, studentId, fromCourseId)` — throw `'Student is not enrolled in the source course'` if nothing was deleted.
+   4. `enrollmentsRepository.createEnrollment(tx, studentId, toCourseId)`.
+
+**Verify:** `POST /students/:id/transfer` with `{ "fromCourseId": "...", "toCourseId": "..." }`, then check Drizzle Studio. Try transferring to a full course — it should fail with a 409 error.

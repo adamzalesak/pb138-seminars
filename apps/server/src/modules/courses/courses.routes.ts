@@ -1,7 +1,7 @@
 import { Elysia } from 'elysia'
 import { z } from 'zod'
 import { CourseQuerySchema, CourseSchema, CreateCourseBodySchema } from './course.schema'
-import { ErrorResponseSchema } from '../../types'
+import { ProblemDetailSchema } from '../../types'
 import { coursesService } from './courses.service'
 
 export const coursesRouter = new Elysia({ prefix: '/courses', tags: ['Courses'] })
@@ -9,14 +9,13 @@ export const coursesRouter = new Elysia({ prefix: '/courses', tags: ['Courses'] 
     Course: CourseSchema,
     CourseList: z.array(CourseSchema),
     CreateCourseBody: CreateCourseBodySchema,
-    ErrorResponse: ErrorResponseSchema,
+    ProblemDetail: ProblemDetailSchema,
   })
 
   // GET /courses
-  .get('/', ({ query }) => {
+  .get('/', async ({ query }) => {
     return coursesService.getAll({
       semester: query.semester,
-      tags: query.tags ? query.tags.split(',') : undefined,
       minCredits: query.minCredits,
       maxCredits: query.maxCredits,
       instructorId: query.instructorId,
@@ -30,22 +29,22 @@ export const coursesRouter = new Elysia({ prefix: '/courses', tags: ['Courses'] 
   })
 
   // GET /courses/:id
-  .get('/:id', ({ params: { id }, set }) => {
-    const course = coursesService.getById(id)
+  .get('/:id', async ({ params: { id }, set }) => {
+    const course = await coursesService.getById(id)
     if (!course) {
       set.status = 404
-      return { message: `Course with id '${id}' not found` }
+      return { status: 404, title: 'Not Found', detail: `Course with id '${id}' not found` }
     }
     return course
   }, {
-    response: { 200: 'Course', 404: 'ErrorResponse' },
+    response: { 200: 'Course', 404: 'ProblemDetail' },
     detail: {
       description: 'Returns a single course by its ID.',
     },
   })
 
   // POST /courses
-  .post('/', ({ body }) => {
+  .post('/', async ({ body }) => {
     return coursesService.create(body)
   }, {
     body: 'CreateCourseBody',

@@ -1,42 +1,20 @@
-import { randomUUID } from 'crypto'
+import { eq } from 'drizzle-orm'
+import type { Database } from '../../db'
+import { instructors as instructorsTable } from '../../db/schema'
 import type { CreateInstructor, Instructor } from './instructor.types'
 
-const instructors: Instructor[] = [
-  {
-    id: '1',
-    firstName: 'Jan',
-    lastName: 'Novák',
-    email: 'jan.novak@fi.muni.cz',
-    department: 'Department of Computer Science',
-    courseIds: ['1', '4'],
-  },
-  {
-    id: '2',
-    firstName: 'Petra',
-    lastName: 'Dvořáková',
-    email: 'petra.dvorakova@fi.muni.cz',
-    department: 'Department of Computer Science',
-    courseIds: ['2', '3'],
-  },
-  {
-    id: '3',
-    firstName: 'Marie',
-    lastName: 'Horáková',
-    email: 'marie.horakova@fi.muni.cz',
-    department: 'Department of Information Systems',
-    courseIds: ['5'],
-  },
-]
+const findAll = async (db: Database): Promise<Instructor[]> => {
+  return await db.select().from(instructorsTable)
+}
 
-const findAll = (): Instructor[] => [...instructors]
+const findById = async (db: Database, id: string): Promise<Instructor | undefined> => {
+  const rows = await db.select().from(instructorsTable).where(eq(instructorsTable.id, id))
+  return rows[0]
+}
 
-const findById = (id: string): Instructor | undefined =>
-  instructors.find((i) => i.id === id)
-
-const create = (body: CreateInstructor): Instructor => {
-  const newInstructor: Instructor = { ...body, id: randomUUID(), courseIds: [] }
-  instructors.push(newInstructor)
-  return newInstructor
+const create = async (db: Database, data: CreateInstructor): Promise<Instructor> => {
+  const [created] = await db.insert(instructorsTable).values(data).returning()
+  return created
 }
 
 export const instructorsRepository = { findAll, findById, create }

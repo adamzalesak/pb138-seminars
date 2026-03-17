@@ -4,7 +4,6 @@ export interface Instructor {
   lastName: string
   email: string
   department: string
-  courseIds: string[]
 }
 
 export interface CreateInstructor {

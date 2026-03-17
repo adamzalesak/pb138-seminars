@@ -1,7 +1,7 @@
 import { Elysia } from 'elysia'
 import { z } from 'zod'
 import { CreateStudentBodySchema, StudentFilterSchema, StudentSchema } from './student.schema'
-import { ErrorResponseSchema } from '../../types'
+import { ProblemDetailSchema } from '../../types'
 import { studentsService } from './students.service'
 
 export const studentsRouter = new Elysia({ prefix: '/students', tags: ['Students'] })
@@ -9,11 +9,11 @@ export const studentsRouter = new Elysia({ prefix: '/students', tags: ['Students
     Student: StudentSchema,
     StudentList: z.array(StudentSchema),
     CreateStudentBody: CreateStudentBodySchema,
-    ErrorResponse: ErrorResponseSchema,
+    ProblemDetail: ProblemDetailSchema,
   })
 
   // GET /students
-  .get('/', ({ query }) => {
+  .get('/', async ({ query }) => {
     return studentsService.getAll(query)
   }, {
     query: StudentFilterSchema,
@@ -24,22 +24,22 @@ export const studentsRouter = new Elysia({ prefix: '/students', tags: ['Students
   })
 
   // GET /students/:id
-  .get('/:id', ({ params: { id }, set }) => {
-    const student = studentsService.getById(id)
+  .get('/:id', async ({ params: { id }, set }) => {
+    const student = await studentsService.getById(id)
     if (!student) {
       set.status = 404
-      return { message: `Student with id '${id}' not found` }
+      return { status: 404, title: 'Not Found', detail: `Student with id '${id}' not found` }
     }
     return student
   }, {
-    response: { 200: 'Student', 404: 'ErrorResponse' },
+    response: { 200: 'Student', 404: 'ProblemDetail' },
     detail: {
       description: 'Returns a single student by ID.',
     },
   })
 
   // POST /students
-  .post('/', ({ body }) => {
+  .post('/', async ({ body }) => {
     return studentsService.create(body)
   }, {
     body: 'CreateStudentBody',

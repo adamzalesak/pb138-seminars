@@ -1,17 +1,12 @@
+import { db } from '../../db'
 import type { CourseFilter, CreateCourse } from './course.types'
 import { coursesRepository } from './courses.repository'
 
-const getAll = (filter?: CourseFilter) => {
-  let result = coursesRepository.findAll()
+const getAll = async (filter?: CourseFilter) => {
+  let result = await coursesRepository.findAll(db)
 
   if (filter?.semester) {
     result = result.filter((course) => course.semester === filter.semester)
-  }
-
-  if (filter?.tags) {
-    result = result.filter((course) =>
-      filter.tags!.every((tag) => course.tags.includes(tag))
-    )
   }
 
   if (filter?.minCredits !== undefined) {
@@ -29,9 +24,9 @@ const getAll = (filter?: CourseFilter) => {
 }
 
 const getById = (id: string) =>
-  coursesRepository.findById(id)
+  coursesRepository.findById(db, id)
 
 const create = (body: CreateCourse) =>
-  coursesRepository.create(body)
+  coursesRepository.create(db, body)
 
 export const coursesService = { getAll, getById, create }

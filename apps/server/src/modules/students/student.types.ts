@@ -4,7 +4,6 @@ export interface Student {
   lastName: string
   email: string
   uco: string
-  enrolledCourseIds: string[]
 }
 
 export interface CreateStudent {
