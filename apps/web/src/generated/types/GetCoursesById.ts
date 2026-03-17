@@ -4,7 +4,7 @@
 */
 
 import type { Course } from "./Course.ts";
-import type { ErrorResponse } from "./ErrorResponse.ts";
+import type { ProblemDetail } from "./ProblemDetail.ts";
 
 export type GetCoursesByIdPathParams = {
     /**
@@ -21,7 +21,7 @@ export type GetCoursesById200 = Course;
 /**
  * @description Response for status 404
 */
-export type GetCoursesById404 = ErrorResponse;
+export type GetCoursesById404 = ProblemDetail;
 
 export type GetCoursesByIdQueryResponse = GetCoursesById200;
 

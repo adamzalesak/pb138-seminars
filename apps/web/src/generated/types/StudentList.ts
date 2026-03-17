@@ -25,8 +25,4 @@ export type StudentList = {
      * @type string
     */
     uco: string;
-    /**
-     * @type array
-    */
-    enrolledCourseIds: string[];
 }[];

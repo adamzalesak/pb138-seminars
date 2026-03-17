@@ -25,8 +25,4 @@ export type InstructorList = {
      * @type string
     */
     department: string;
-    /**
-     * @type array
-    */
-    courseIds: string[];
 }[];

@@ -18,10 +18,6 @@ export type GetCoursesQueryParams = {
     */
     semester?: GetCoursesQueryParamsSemesterEnum;
     /**
-     * @type string | undefined
-    */
-    tags?: string;
-    /**
      * @minLength -9007199254740991
      * @maxLength 9007199254740991
      * @type integer | undefined

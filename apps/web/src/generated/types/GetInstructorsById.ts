@@ -3,8 +3,8 @@
 * Do not edit manually.
 */
 
-import type { ErrorResponse } from "./ErrorResponse.ts";
 import type { Instructor } from "./Instructor.ts";
+import type { ProblemDetail } from "./ProblemDetail.ts";
 
 export type GetInstructorsByIdPathParams = {
     /**
@@ -21,7 +21,7 @@ export type GetInstructorsById200 = Instructor;
 /**
  * @description Response for status 404
 */
-export type GetInstructorsById404 = ErrorResponse;
+export type GetInstructorsById404 = ProblemDetail;
 
 export type GetInstructorsByIdQueryResponse = GetInstructorsById200;
 

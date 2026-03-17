@@ -13,6 +13,8 @@ export type { GetStudentsSuspenseQueryKey } from "./useGetStudentsSuspense.ts";
 export type { PostCoursesMutationKey } from "./usePostCourses.ts";
 export type { PostInstructorsMutationKey } from "./usePostInstructors.ts";
 export type { PostStudentsMutationKey } from "./usePostStudents.ts";
+export type { PostStudentsByIdEnrollMutationKey } from "./usePostStudentsByIdEnroll.ts";
+export type { PostStudentsByIdTransferMutationKey } from "./usePostStudentsByIdTransfer.ts";
 export { getCoursesQueryKey, getCoursesQueryOptions, useGetCourses } from "./useGetCourses.ts";
 export { getCoursesByIdQueryKey, getCoursesByIdQueryOptions, useGetCoursesById } from "./useGetCoursesById.ts";
 export { getCoursesByIdSuspenseQueryKey, getCoursesByIdSuspenseQueryOptions, useGetCoursesByIdSuspense } from "./useGetCoursesByIdSuspense.ts";
@@ -28,3 +30,5 @@ export { getStudentsSuspenseQueryKey, getStudentsSuspenseQueryOptions, useGetStu
 export { postCoursesMutationKey, usePostCourses } from "./usePostCourses.ts";
 export { postInstructorsMutationKey, usePostInstructors } from "./usePostInstructors.ts";
 export { postStudentsMutationKey, usePostStudents } from "./usePostStudents.ts";
+export { postStudentsByIdEnrollMutationKey, usePostStudentsByIdEnroll } from "./usePostStudentsByIdEnroll.ts";
+export { postStudentsByIdTransferMutationKey, usePostStudentsByIdTransfer } from "./usePostStudentsByIdTransfer.ts";

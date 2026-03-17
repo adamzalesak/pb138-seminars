@@ -49,10 +49,6 @@ export type CourseList = {
     */
     year: number;
     /**
-     * @type array
-    */
-    tags: string[];
-    /**
      * @minLength -9007199254740991
      * @maxLength 9007199254740991
      * @type integer

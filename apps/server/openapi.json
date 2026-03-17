@@ -753,6 +753,11 @@
             "type": "integer",
             "minimum": -9007199254740991,
             "maximum": 9007199254740991
+          },
+          "enrolled": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
           }
         },
         "required": [
@@ -764,7 +769,8 @@
           "instructorId",
           "semester",
           "year",
-          "capacity"
+          "capacity",
+          "enrolled"
         ],
         "additionalProperties": false
       },
@@ -809,6 +815,11 @@
               "type": "integer",
               "minimum": -9007199254740991,
               "maximum": 9007199254740991
+            },
+            "enrolled": {
+              "type": "integer",
+              "minimum": -9007199254740991,
+              "maximum": 9007199254740991
             }
           },
           "required": [
@@ -820,7 +831,8 @@
             "instructorId",
             "semester",
             "year",
-            "capacity"
+            "capacity",
+            "enrolled"
           ],
           "additionalProperties": false
         }

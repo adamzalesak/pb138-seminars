@@ -52,10 +52,6 @@ export type CreateCourseBody = {
     */
     year: number;
     /**
-     * @type array
-    */
-    tags: string[];
-    /**
      * @minLength 1
      * @maxLength 500
      * @type integer

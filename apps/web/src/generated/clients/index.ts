@@ -7,3 +7,5 @@ export { getStudentsById } from "./getStudentsById.ts";
 export { postCourses } from "./postCourses.ts";
 export { postInstructors } from "./postInstructors.ts";
 export { postStudents } from "./postStudents.ts";
+export { postStudentsByIdEnroll } from "./postStudentsByIdEnroll.ts";
+export { postStudentsByIdTransfer } from "./postStudentsByIdTransfer.ts";
