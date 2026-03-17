@@ -127,7 +127,12 @@ Replace the stubs with Drizzle queries. Use **instructors.repository.ts** as a r
 
 **File:** `apps/server/src/modules/courses/courses.repository.ts`
 
-Same pattern as students. Implement `findAll(db)`, `findById(db, id)`, and `create(db, data)`.
+`findAll(db)` is already implemented — it uses a LEFT JOIN with enrollments to count enrolled students per course. Use it as a reference for the remaining two:
+
+| Method | Hint |
+|---|---|
+| `findById(db, id)` | Same join pattern as `findAll`, but with a `.where(...)` filter. Return `undefined` if not found. |
+| `create(db, data)` | `.insert(...).values(data).returning()` — a new course always has `enrolled: 0`. |
 
 **Verify:** Scalar → `POST /courses` to create, then `GET /courses?semester=spring`
 
