@@ -25,51 +25,48 @@ export const instructors = pgTable('instructors', {
 
 // ── Courses ─────────────────────────────────────────────────────────────────
 
-// TODO: Define the courses table with these columns:
-//   - id (uuid, primary key, random default)
-//   - code (text, not null, unique)
-//   - name (text, not null)
-//   - description (text, not null)
-//   - credits (integer, not null)
-//   - instructorId (uuid, not null, foreign key → instructors.id)
-//   - semester (not null) — use pgEnum with values: 'fall', 'spring'
-//     Hint: define a pgEnum above the table, e.g. export const semesterEnum = pgEnum('semester', [...])
-//     then use semesterEnum('semester') as the column type
-//   - year (integer, not null)
-//   - capacity (integer, not null)
-//   - createdAt (timestamp, default now, not null)
+export const semesterEnum = pgEnum('semester', ['fall', 'spring'])
+
 export const courses = pgTable('courses', {
   id: uuid('id').primaryKey().defaultRandom(),
-  // TODO: Add the remaining columns
+  code: text('code').notNull().unique(),
+  name: text('name').notNull(),
+  description: text('description').notNull(),
+  credits: integer('credits').notNull(),
+  instructorId: uuid('instructor_id').notNull().references(() => instructors.id),
+  semester: semesterEnum('semester').notNull(),
+  year: integer('year').notNull(),
+  capacity: integer('capacity').notNull(),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
 })
 
 // ── Enrollments (M:N junction table) ────────────────────────────────────────
 
-// TODO: Define the enrollments table with these columns:
-//   - id (uuid, primary key, random default)
-//   - studentId (uuid, not null, foreign key → students.id)
-//   - courseId (uuid, not null, foreign key → courses.id)
-//   - enrolledAt (timestamp, default now, not null)
-//   - unique constraint on (studentId, courseId)
 export const enrollments = pgTable('enrollments', {
   id: uuid('id').primaryKey().defaultRandom(),
-  // TODO: Add the remaining columns and the unique constraint
-})
+  studentId: uuid('student_id').notNull().references(() => students.id),
+  courseId: uuid('course_id').notNull().references(() => courses.id),
+  enrolledAt: timestamp('enrolled_at').defaultNow().notNull(),
+}, (t) => [
+  unique().on(t.studentId, t.courseId),
+])
 
 // ── Relations ───────────────────────────────────────────────────────────────
 
-// TODO: Define relations for all tables using the `relations` helper from drizzle-orm.
-//   This enables the Drizzle relational query API (db.query.students.findMany({ with: { ... } })).
-//   Docs: https://orm.drizzle.team/docs/relations
-//
-//   Define the following:
-//   - studentRelations:  students have many enrollments
-//   - instructorRelations: instructors have many courses
-//   - courseRelations: courses have one instructor and many enrollments
-//   - enrollmentRelations: enrollments have one student and one course
-//
-//   Example:
-//     export const courseRelations = relations(courses, ({ one, many }) => ({
-//       instructor: one(instructors, { fields: [courses.instructorId], references: [instructors.id] }),
-//       enrollments: many(enrollments),
-//     }))
+export const studentRelations = relations(students, ({ many }) => ({
+  enrollments: many(enrollments),
+}))
+
+export const instructorRelations = relations(instructors, ({ many }) => ({
+  courses: many(courses),
+}))
+
+export const courseRelations = relations(courses, ({ one, many }) => ({
+  instructor: one(instructors, { fields: [courses.instructorId], references: [instructors.id] }),
+  enrollments: many(enrollments),
+}))
+
+export const enrollmentRelations = relations(enrollments, ({ one }) => ({
+  student: one(students, { fields: [enrollments.studentId], references: [students.id] }),
+  course: one(courses, { fields: [enrollments.courseId], references: [courses.id] }),
+}))

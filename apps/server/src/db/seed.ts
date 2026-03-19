@@ -49,11 +49,37 @@ async function main() {
 
   // ── Courses ─────────────────────────────────────────────────────────────
 
-  // TODO: Insert 5 courses. Each course needs an instructorId from createdInstructors.
+  const createdCourses = await db
+    .insert(courses)
+    .values(
+      Array.from({ length: 5 }, (_, i) => ({
+        code: `PB${100 + i}`,
+        name: faker.lorem.words(3),
+        description: faker.lorem.sentence(),
+        credits: faker.helpers.arrayElement([2, 3, 4, 5, 6]),
+        instructorId: faker.helpers.arrayElement(createdInstructors).id,
+        semester: faker.helpers.arrayElement(['fall', 'spring'] as const),
+        year: 2026,
+        capacity: faker.helpers.arrayElement([20, 30, 50]),
+      })),
+    )
+    .returning()
+
+  console.log(`Created ${createdCourses.length} courses`)
 
   // ── Enrollments ─────────────────────────────────────────────────────────
 
-  // TODO: Insert enrollments — enroll each student into 1–3 random courses.
+  const enrollmentValues: { studentId: string; courseId: string }[] = []
+  for (const student of createdStudents) {
+    const randomCourses = faker.helpers.arrayElements(createdCourses, { min: 1, max: 3 })
+    for (const course of randomCourses) {
+      enrollmentValues.push({ studentId: student.id, courseId: course.id })
+    }
+  }
+
+  const createdEnrollments = await db.insert(enrollments).values(enrollmentValues).returning()
+
+  console.log(`Created ${createdEnrollments.length} enrollments`)
 
   console.log('Done!')
   process.exit(0)
