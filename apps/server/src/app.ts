@@ -70,6 +70,11 @@ export function createApp() {
         },
       }),
     )
+    .onBeforeHandle(async () => {
+      if (process.env.SLOW_MODE === 'true') {
+        await new Promise((resolve) => setTimeout(resolve, 2000))
+      }
+    })
     .onError(({ error, code, set }) => {
       const dbError = getDatabaseError(error)
 

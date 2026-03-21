@@ -23,6 +23,10 @@ export function getRouter() {
         <LoaderCircle className="h-8 w-8 animate-spin text-muted-foreground" />
       </div>
     ),
+    // By default, TanStack Router will delay showing the pending component for 500ms to avoid flashing it for fast loads.
+    defaultPendingMs: 1000,
+    // The minimum amount of time to show the pending component once it's shown. This prevents it from flashing away too quickly.
+    defaultPendingMinMs: 500,
   });
 
   return router;
