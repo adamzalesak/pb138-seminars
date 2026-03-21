@@ -19,15 +19,12 @@ docker compose up -d
 # 3. Copy environment variables
 cp apps/server/.env.example apps/server/.env
 
-# 4. Apply database migrations & seed
-bun run db:generate && bun run db:migrate
-cd apps/server && bun run db:seed && cd ../..
+# 4. Apply migrations & seed the database
+bun run db:push
+bun run db:seed
 
-# 5. Start the server
-cd apps/server && bun run dev &
-
-# 6. Start the frontend
-cd apps/web && bun run dev
+# 5. Start the server + frontend
+bun run dev
 ```
 
 | URL | What |
