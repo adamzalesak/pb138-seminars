@@ -43,7 +43,7 @@ function RootLayout() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <div className="mx-auto max-w-[900px] p-8">
+      <div className="mx-auto max-w-225 p-8">
         <nav className="mb-8 flex items-center gap-6">
           {/* TODO (Task 1): Add Link components for navigation */}
           <span className="text-lg font-bold">PB138 University</span>
