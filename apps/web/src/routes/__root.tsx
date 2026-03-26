@@ -21,6 +21,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     }),
     component: RootLayout,
     shellComponent: RootDocument,
+    ssr: true,
   },
 );
 
