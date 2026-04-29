@@ -1,6 +1,7 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import {
   HeadContent,
+  Link,
   Outlet,
   Scripts,
   createRootRouteWithContext,
@@ -46,8 +47,29 @@ function RootLayout() {
     <QueryClientProvider client={queryClient}>
       <div className="mx-auto max-w-225 p-8">
         <nav className="mb-8 flex items-center gap-6">
-          {/* TODO (Task 1): Add Link components for navigation */}
           <span className="text-lg font-bold">PB138 University</span>
+          <Link
+            to="/"
+            activeOptions={{ exact: true }}
+            activeProps={{ className: "font-semibold text-foreground" }}
+            className="text-sm text-muted-foreground hover:text-foreground"
+          >
+            Home
+          </Link>
+          <Link
+            to="/students"
+            activeProps={{ className: "font-semibold text-foreground" }}
+            className="text-sm text-muted-foreground hover:text-foreground"
+          >
+            Students
+          </Link>
+          <Link
+            to="/courses"
+            activeProps={{ className: "font-semibold text-foreground" }}
+            className="text-sm text-muted-foreground hover:text-foreground"
+          >
+            Courses
+          </Link>
         </nav>
 
         <main>

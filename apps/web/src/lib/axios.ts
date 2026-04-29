@@ -1,5 +1,6 @@
 import axios from 'axios'
 import type { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios'
+import { notFound } from '@tanstack/react-router'
 
 /**
  * Subset of AxiosRequestConfig
@@ -33,6 +34,16 @@ export const axiosInstance = axios.create({
     'Content-Type': 'application/json',
   },
 })
+
+axiosInstance.interceptors.response.use(
+  (response) => response,
+  (error: AxiosError) => {
+    if (error.response?.status === 404) {
+      throw notFound()
+    }
+    throw error
+  },
+)
 
 const client = async <TData, TError = unknown, TVariables = unknown>(
   config: RequestConfig<TVariables>,
