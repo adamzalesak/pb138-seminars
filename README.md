@@ -154,7 +154,7 @@ The skeleton has TanStack Start set up with `__root.tsx` ready. Your job:
 
 Walkthrough for the seminar 11 live demo. Each step is what the instructor does on screen.
 
-> **TODO (Seminar 11):** placeholders below get real URLs/values during the demo.
+> URLs below depend on your accounts. Fork the repo, run through the steps, and you'll get your own.
 
 ### Pre-work (instructor accounts, done before seminar)
 
@@ -165,67 +165,55 @@ Walkthrough for the seminar 11 live demo. Each step is what the instructor does 
 
 ### Task 1 — CI (GitHub Actions)
 
-1. Open `.github/workflows/ci.yml` and replace the TODO with the four steps:
-   1. `actions/checkout@v4`
-   2. `oven-sh/setup-bun@v2` (bun-version: latest)
-   3. `bun install --frozen-lockfile`
-   4. `bun run build`
-2. Commit + push. Open the **Actions** tab on GitHub, watch the run go green.
+The workflow at `.github/workflows/ci.yml` runs four steps on every push and PR:
+
+1. `actions/checkout@v4`
+2. `oven-sh/setup-bun@v2` (bun-version: latest)
+3. `bun install --frozen-lockfile`
+4. `bun run build`
+
+Push a branch and open the **Actions** tab on GitHub — the run goes green when CI passes. PRs to `main` are gated on this check.
 
 ### Task 2 — Frontend deploy (Vercel)
 
 1. Vercel dashboard → **Add New Project** → import this repo.
 2. Vercel auto-detects Vite (root: `apps/web`). Accept defaults.
 3. Add env var: `VITE_API_URL=http://localhost:3000` (placeholder; updated in Task 3).
-4. Deploy. Note the URL: **TODO `<vercel-url>`**.
+4. Deploy. Note the URL — e.g. `https://pb138-seminars-yourname.vercel.app`.
 5. Open a PR — show the **preview deploy** auto-comment.
 
 ### Task 3 — DB + server (Neon + Render)
 
-1. **Neon:** dashboard → **Create project** → copy the connection string. **TODO `<neon-database-url>`**.
+1. **Neon:** dashboard → **Create project** → copy the connection string — e.g. `postgres://user:pass@ep-xxx.neon.tech/neondb?sslmode=require`.
 2. **Render:** dashboard → **New Blueprint** → point at this repo (`apps/server/render.yaml` is auto-detected).
 3. In the Render dashboard, set the secret env vars (the `sync: false` ones from `render.yaml`):
    - `DATABASE_URL` = the Neon URL from step 1
    - `FRONTEND_URL` = the Vercel URL from Task 2 (no trailing slash)
-4. Deploy. Note the URL: **TODO `<render-url>`**.
+4. Deploy. Note the URL — e.g. `https://pb138-seminar-api.onrender.com`.
 5. **Update Vercel:** edit `VITE_API_URL` to the Render URL → redeploy.
 6. **Verify end-to-end:** open the Vercel URL, navigate to `/courses` and `/students` — data is loading from the cloud DB through the cloud API.
 
 ---
 
-The tooling for Tasks 4–7 (Biome, Vitest, Playwright) is already wired up in the project. The instructor demos only the CI integration — adding new jobs to `.github/workflows/ci.yml` so each tool runs on every PR.
+Tooling (Biome, Vitest, Playwright) is wired up at the workspace root and per app. The CI workflow runs each tool as its own parallel job:
 
-### Task 4 — Lint (Biome) in CI
+| Job | Command | Where |
+|---|---|---|
+| `lint` | `bun run check` | Workspace root — Biome lints + format-checks every file |
+| `test-server` | `bun run test` | `apps/server` — Vitest hits Postgres service container |
+| `test-web` | `bun run test` | `apps/web` — Vitest in jsdom (no DB) |
+| `test-e2e` | `bun run test` | `apps/e2e` — Playwright + Postgres; webServer boots both apps |
+| `build` | `bun run build` | Workspace root — turbo builds both apps (typecheck + bundle) |
 
-1. Show `bun run check` passing locally — Biome lints + checks formatting in one pass.
-2. In `.github/workflows/ci.yml`, replace the Task 4 TODO with a `lint` job:
-   ```yaml
-   lint:
-     runs-on: ubuntu-latest
-     steps:
-       - uses: actions/checkout@v4
-       - uses: oven-sh/setup-bun@v2
-         with:
-           bun-version: latest
-       - run: bun install --frozen-lockfile
-       - run: bun run check
-   ```
+### Local equivalents
 
-### Task 5 — Backend unit tests (Vitest) in CI
+- `bun run check` (root) — same as the `lint` job
+- `cd apps/server && bun run test` — needs `DATABASE_URL_TEST=postgresql://postgres:postgres@localhost:5432/pb138_test`
+- `cd apps/web && bun run test` — no env required
+- `cd apps/e2e && bun run test:install && bun run test` — Playwright spawns server + web from `apps/server` and `apps/web` automatically
 
-1. Show `cd apps/server && bun run test` passing locally — DB-backed tests against `pb138_test` (created by `db-init/01-create-test-db.sql`).
-2. Replace the Task 5 TODO with a `test-server` job. Add a Postgres service container at the job level and set `DATABASE_URL_TEST=postgres://postgres:postgres@localhost:5432/test`.
-
-### Task 6 — Frontend unit tests (Vitest + RTL) in CI
-
-1. Show `cd apps/web && bun run test` passing locally — `CourseCard` rendered via React Testing Library in jsdom.
-2. Replace the Task 6 TODO with a `test-web` job. No DB needed.
-
-### Task 7 — End-to-end tests (Playwright) in CI
-
-1. Show `cd apps/e2e && bun run test` passing locally — Playwright spawns server + web automatically.
-2. Replace the Task 7 TODO with a `test-e2e` job. Add Postgres service container, `bun --cwd apps/e2e test:install` (Chromium), then `bun --cwd apps/e2e test`.
+The `pb138_test` database is created by `db-init/01-create-test-db.sql` on first `docker compose up`.
 
 ### Finale
 
-Open a PR. All five jobs (build, lint, test-server, test-web, test-e2e) run in parallel on GitHub Actions, all go green, then merge → Vercel + Render auto-deploy as in Tasks 2–3.
+Open a PR. All five jobs run in parallel on GitHub Actions; all go green, then merge → Vercel + Render auto-deploy as in Tasks 2–3.

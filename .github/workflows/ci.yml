@@ -1,11 +1,5 @@
 name: CI
 
-# TODO (Task 1 — CI):
-# Trigger this workflow on:
-#   - push to any branch
-#   - pull_request to main
-#
-# Why: every push proves the branch builds; PR runs gate the merge.
 on:
   push:
   pull_request:
@@ -15,35 +9,98 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      # TODO (Task 1 — CI): fill in steps below
-      #
-      # 1. Checkout — actions/checkout@v4
-      # 2. Setup Bun — oven-sh/setup-bun@v2 with bun-version: latest
-      # 3. Install dependencies — bun install --frozen-lockfile
-      # 4. Build — bun run build  (turbo runs build for both apps; build includes typecheck)
-      #
-      # The full snippet to paste into Steps 1–4 will replace this comment.
-      - run: echo "TODO — replace this with the four steps above"
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+      - run: bun install --frozen-lockfile
+      - run: bun run build
 
-  # TODO (Task 4 — Biome):
-  # Add a `lint` job that runs `bun run check`.
-  # Steps: checkout, setup-bun, install --frozen-lockfile, bun run check.
-  # Same shape as the build job, just one different command.
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+      - run: bun install --frozen-lockfile
+      - run: bun run check
 
-  # TODO (Task 5 — Vitest BE):
-  # Add a `test-server` job that runs `bun --cwd apps/server test`.
-  # Add a Postgres service container at the job level — postgres:16-alpine,
-  # POSTGRES_USER=postgres, POSTGRES_PASSWORD=postgres, POSTGRES_DB=test,
-  # ports: ['5432:5432'], with health-check options.
-  # Set DATABASE_URL_TEST env in the job to postgres://postgres:postgres@localhost:5432/test.
+  test-server:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:18-alpine
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    env:
+      DATABASE_URL_TEST: postgresql://postgres:postgres@localhost:5432/test
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+      - run: bun install --frozen-lockfile
+      - run: bun run test
+        working-directory: apps/server
 
-  # TODO (Task 6 — Vitest FE):
-  # Add a `test-web` job that runs `bun --cwd apps/web test`.
-  # No DB needed — RTL runs entirely in jsdom.
+  test-web:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+      - run: bun install --frozen-lockfile
+      - run: bun run test
+        working-directory: apps/web
 
-  # TODO (Task 7 — Playwright E2E):
-  # Add a `test-e2e` job:
-  #   - Postgres service container (same shape as test-server's, separate instance).
-  #   - bun install + bun --cwd apps/e2e test:install (downloads Chromium).
-  #   - bun --cwd apps/e2e test (Playwright spawns server + web via webServer block).
-  # Cache the Playwright browsers between runs (~/.cache/ms-playwright) for speed.
+  test-e2e:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:18-alpine
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    env:
+      DATABASE_URL_E2E: postgresql://postgres:postgres@localhost:5432/test
+      CI: true
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+      - run: bun install --frozen-lockfile
+      - name: Cache Playwright browsers
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ hashFiles('apps/e2e/package.json') }}
+      - run: bun run test:install
+        working-directory: apps/e2e
+      - run: bun run test
+        working-directory: apps/e2e
+      - if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: apps/e2e/playwright-report/
+          retention-days: 7
