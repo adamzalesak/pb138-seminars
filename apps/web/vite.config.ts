@@ -8,7 +8,9 @@ export default defineConfig({
   plugins: [
     tsconfigPaths({ projects: ['./tsconfig.json'] }),
     tailwindcss(),
-    tanstackStart(),
+    tanstackStart({
+      spa: { enabled: true },
+    }),
     viteReact(),
   ],
   server: {
