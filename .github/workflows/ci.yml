@@ -1,0 +1,26 @@
+name: CI
+
+# TODO (Task 1 — CI):
+# Trigger this workflow on:
+#   - push to any branch
+#   - pull_request to main
+#
+# Why: every push proves the branch builds; PR runs gate the merge.
+on:
+  push:
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      # TODO (Task 1 — CI): fill in steps below
+      #
+      # 1. Checkout — actions/checkout@v4
+      # 2. Setup Bun — oven-sh/setup-bun@v2 with bun-version: latest
+      # 3. Install dependencies — bun install --frozen-lockfile
+      # 4. Build — bun run build  (turbo runs build for both apps; build includes typecheck)
+      #
+      # The full snippet to paste into Steps 1–4 will replace this comment.
+      - run: echo "TODO — replace this with the four steps above"

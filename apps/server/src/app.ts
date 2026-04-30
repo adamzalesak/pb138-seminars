@@ -46,6 +46,12 @@ export function createApp() {
   return new Elysia()
     .use(
       cors({
+        // TODO (Task 3 — Server deploy):
+        // Replace the hardcoded localhost array with a comma-separated list
+        // read from the FRONTEND_URL env var, falling back to localhost for dev.
+        // Example:
+        //   const origins = (process.env.FRONTEND_URL ?? 'http://localhost:5173,http://localhost:3000').split(',')
+        // Why: the deployed Vercel URL is unknown at code time and differs per env (preview vs prod).
         origin: ['http://localhost:5173', 'http://localhost:3000'],
       }),
     )

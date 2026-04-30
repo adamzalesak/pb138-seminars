@@ -1,0 +1,29 @@
+# Render Blueprint — config as code for the seminar API.
+# Reference: https://render.com/docs/blueprint-spec
+#
+# TODO (Task 3 — Server deploy):
+# Fill in the marked fields. The instructor copy-pastes values from
+# Neon (DATABASE_URL) and Vercel (FRONTEND_URL) during the live demo.
+
+services:
+  - type: web
+    name: pb138-seminar-api
+    runtime: node
+    plan: free
+    rootDir: apps/server
+
+    # TODO: install deps with Bun, then build TypeScript.
+    # buildCommand: bun install --frozen-lockfile && bun run build
+
+    # TODO: run pending migrations, then start the compiled server.
+    # startCommand: bun run db:migrate && bun run start
+
+    envVars:
+      - key: NODE_ENV
+        value: production
+      # TODO: bind DATABASE_URL from Neon (set as a secret in the Render dashboard).
+      # - key: DATABASE_URL
+      #   sync: false
+      # TODO: bind FRONTEND_URL to the Vercel deployment URL.
+      # - key: FRONTEND_URL
+      #   sync: false

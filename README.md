@@ -147,3 +147,46 @@ The skeleton has TanStack Start set up with `__root.tsx` ready. Your job:
    - Data should be fetched on hover, navigation should feel instant
 
 **Verify:** Navigate to a course detail → no loading spinner (data prefetched). Try an invalid ID → error UI shows.
+
+---
+
+## Deploy (Seminar 11 — CI/CD)
+
+Walkthrough for the seminar 11 live demo. Each step is what the instructor does on screen.
+
+> **TODO (Seminar 11):** placeholders below get real URLs/values during the demo.
+
+### Pre-work (instructor accounts, done before seminar)
+
+- GitHub account with this repo forked or with write access
+- Vercel Hobby — no credit card
+- Neon Free — no credit card
+- Render Free — credit card required for verification only (no charge)
+
+### Task 1 — CI (GitHub Actions)
+
+1. Open `.github/workflows/ci.yml` and replace the TODO with the four steps:
+   1. `actions/checkout@v4`
+   2. `oven-sh/setup-bun@v2` (bun-version: latest)
+   3. `bun install --frozen-lockfile`
+   4. `bun run build`
+2. Commit + push. Open the **Actions** tab on GitHub, watch the run go green.
+
+### Task 2 — Frontend deploy (Vercel)
+
+1. Vercel dashboard → **Add New Project** → import this repo.
+2. Vercel auto-detects Vite (root: `apps/web`). Accept defaults.
+3. Add env var: `VITE_API_URL=http://localhost:3000` (placeholder; updated in Task 3).
+4. Deploy. Note the URL: **TODO `<vercel-url>`**.
+5. Open a PR — show the **preview deploy** auto-comment.
+
+### Task 3 — DB + server (Neon + Render)
+
+1. **Neon:** dashboard → **Create project** → copy the connection string. **TODO `<neon-database-url>`**.
+2. **Render:** dashboard → **New Blueprint** → point at this repo (`apps/server/render.yaml` is auto-detected).
+3. In the Render dashboard, set the secret env vars (the `sync: false` ones from `render.yaml`):
+   - `DATABASE_URL` = the Neon URL from step 1
+   - `FRONTEND_URL` = the Vercel URL from Task 2 (no trailing slash)
+4. Deploy. Note the URL: **TODO `<render-url>`**.
+5. **Update Vercel:** edit `VITE_API_URL` to the Render URL → redeploy.
+6. **Verify end-to-end:** open the Vercel URL, navigate to `/courses` and `/students` — data is loading from the cloud DB through the cloud API.
