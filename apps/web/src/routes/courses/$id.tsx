@@ -6,14 +6,10 @@ export const Route = createFileRoute('/courses/$id')({
   loader: ({ context: { queryClient }, params: { id } }) =>
     queryClient.ensureQueryData(getCoursesByIdQueryOptions(id)),
   component: CourseDetailPage,
-  pendingComponent: () => (
-    <p className="text-muted-foreground">Loading course…</p>
-  ),
+  pendingComponent: () => <p className="text-muted-foreground">Loading course…</p>,
   errorComponent: ({ error }) => (
     <div>
-      <p className="mb-4 text-destructive">
-        Failed to load course: {error.message}
-      </p>
+      <p className="mb-4 text-destructive">Failed to load course: {error.message}</p>
       <Link to="/courses" className="text-sm underline">
         Back to courses
       </Link>
@@ -48,9 +44,7 @@ function CourseDetailPage() {
         <h2 className="text-xl font-bold">
           {course.code} – {course.name}
         </h2>
-        <span className="text-sm text-muted-foreground">
-          {course.credits} credits
-        </span>
+        <span className="text-sm text-muted-foreground">{course.credits} credits</span>
       </div>
 
       <p className="mb-4 text-muted-foreground">{course.description}</p>
@@ -58,8 +52,7 @@ function CourseDetailPage() {
       <dl className="grid grid-cols-[auto_1fr] gap-x-6 gap-y-2 text-sm">
         <dt className="text-muted-foreground">Semester</dt>
         <dd>
-          {course.semester.charAt(0).toUpperCase() + course.semester.slice(1)}{' '}
-          {course.year}
+          {course.semester.charAt(0).toUpperCase() + course.semester.slice(1)} {course.year}
         </dd>
 
         <dt className="text-muted-foreground">Enrollment</dt>

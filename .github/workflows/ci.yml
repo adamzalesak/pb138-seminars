@@ -24,3 +24,26 @@ jobs:
       #
       # The full snippet to paste into Steps 1–4 will replace this comment.
       - run: echo "TODO — replace this with the four steps above"
+
+  # TODO (Task 4 — Biome):
+  # Add a `lint` job that runs `bun run check`.
+  # Steps: checkout, setup-bun, install --frozen-lockfile, bun run check.
+  # Same shape as the build job, just one different command.
+
+  # TODO (Task 5 — Vitest BE):
+  # Add a `test-server` job that runs `bun --cwd apps/server test`.
+  # Add a Postgres service container at the job level — postgres:16-alpine,
+  # POSTGRES_USER=postgres, POSTGRES_PASSWORD=postgres, POSTGRES_DB=test,
+  # ports: ['5432:5432'], with health-check options.
+  # Set DATABASE_URL_TEST env in the job to postgres://postgres:postgres@localhost:5432/test.
+
+  # TODO (Task 6 — Vitest FE):
+  # Add a `test-web` job that runs `bun --cwd apps/web test`.
+  # No DB needed — RTL runs entirely in jsdom.
+
+  # TODO (Task 7 — Playwright E2E):
+  # Add a `test-e2e` job:
+  #   - Postgres service container (same shape as test-server's, separate instance).
+  #   - bun install + bun --cwd apps/e2e test:install (downloads Chromium).
+  #   - bun --cwd apps/e2e test (Playwright spawns server + web via webServer block).
+  # Cache the Playwright browsers between runs (~/.cache/ms-playwright) for speed.

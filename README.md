@@ -190,3 +190,42 @@ Walkthrough for the seminar 11 live demo. Each step is what the instructor does 
 4. Deploy. Note the URL: **TODO `<render-url>`**.
 5. **Update Vercel:** edit `VITE_API_URL` to the Render URL → redeploy.
 6. **Verify end-to-end:** open the Vercel URL, navigate to `/courses` and `/students` — data is loading from the cloud DB through the cloud API.
+
+---
+
+The tooling for Tasks 4–7 (Biome, Vitest, Playwright) is already wired up in the project. The instructor demos only the CI integration — adding new jobs to `.github/workflows/ci.yml` so each tool runs on every PR.
+
+### Task 4 — Lint (Biome) in CI
+
+1. Show `bun run check` passing locally — Biome lints + checks formatting in one pass.
+2. In `.github/workflows/ci.yml`, replace the Task 4 TODO with a `lint` job:
+   ```yaml
+   lint:
+     runs-on: ubuntu-latest
+     steps:
+       - uses: actions/checkout@v4
+       - uses: oven-sh/setup-bun@v2
+         with:
+           bun-version: latest
+       - run: bun install --frozen-lockfile
+       - run: bun run check
+   ```
+
+### Task 5 — Backend unit tests (Vitest) in CI
+
+1. Show `cd apps/server && bun run test` passing locally — DB-backed tests against `pb138_test` (created by `db-init/01-create-test-db.sql`).
+2. Replace the Task 5 TODO with a `test-server` job. Add a Postgres service container at the job level and set `DATABASE_URL_TEST=postgres://postgres:postgres@localhost:5432/test`.
+
+### Task 6 — Frontend unit tests (Vitest + RTL) in CI
+
+1. Show `cd apps/web && bun run test` passing locally — `CourseCard` rendered via React Testing Library in jsdom.
+2. Replace the Task 6 TODO with a `test-web` job. No DB needed.
+
+### Task 7 — End-to-end tests (Playwright) in CI
+
+1. Show `cd apps/e2e && bun run test` passing locally — Playwright spawns server + web automatically.
+2. Replace the Task 7 TODO with a `test-e2e` job. Add Postgres service container, `bun --cwd apps/e2e test:install` (Chromium), then `bun --cwd apps/e2e test`.
+
+### Finale
+
+Open a PR. All five jobs (build, lint, test-server, test-web, test-e2e) run in parallel on GitHub Actions, all go green, then merge → Vercel + Render auto-deploy as in Tasks 2–3.

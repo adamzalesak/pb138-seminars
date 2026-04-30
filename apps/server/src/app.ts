@@ -26,16 +26,32 @@ function getDatabaseError(error: unknown): DatabaseError | undefined {
 function mapDatabaseError(dbError: DatabaseError): ProblemDetail {
   switch (dbError.code) {
     case PG_ERROR.UNIQUE_VIOLATION:
-      return { status: 409, title: 'Conflict', detail: dbError.detail ?? 'Unique constraint violated' }
+      return {
+        status: 409,
+        title: 'Conflict',
+        detail: dbError.detail ?? 'Unique constraint violated',
+      }
 
     case PG_ERROR.FOREIGN_KEY_VIOLATION:
-      return { status: 400, title: 'Bad Request', detail: dbError.detail ?? 'Referenced entity does not exist' }
+      return {
+        status: 400,
+        title: 'Bad Request',
+        detail: dbError.detail ?? 'Referenced entity does not exist',
+      }
 
     case PG_ERROR.NOT_NULL_VIOLATION:
-      return { status: 400, title: 'Bad Request', detail: dbError.detail ?? 'A required field is missing' }
+      return {
+        status: 400,
+        title: 'Bad Request',
+        detail: dbError.detail ?? 'A required field is missing',
+      }
 
     case PG_ERROR.CHECK_VIOLATION:
-      return { status: 400, title: 'Bad Request', detail: dbError.detail ?? 'Check constraint violated' }
+      return {
+        status: 400,
+        title: 'Bad Request',
+        detail: dbError.detail ?? 'Check constraint violated',
+      }
 
     default:
       return { status: 500, title: 'Internal Server Error', detail: 'Database operation failed' }
@@ -59,8 +75,7 @@ export function createApp() {
       openapi({
         path: '/api-docs',
         mapJsonSchema: {
-          zod: (schema: z.ZodTypeAny) =>
-            z.toJSONSchema(schema, { target: 'openapi-3.0' }),
+          zod: (schema: z.ZodTypeAny) => z.toJSONSchema(schema, { target: 'openapi-3.0' }),
         },
         exclude: { methods: ['OPTIONS'] },
         documentation: {
@@ -92,7 +107,11 @@ export function createApp() {
 
       if (code === 'VALIDATION') {
         set.status = 400
-        return { status: 400, title: 'Validation Error', detail: error.message } satisfies ProblemDetail
+        return {
+          status: 400,
+          title: 'Validation Error',
+          detail: error.message,
+        } satisfies ProblemDetail
       }
 
       console.error('Unhandled error:', error)

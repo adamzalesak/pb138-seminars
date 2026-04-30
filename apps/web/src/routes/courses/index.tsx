@@ -1,7 +1,6 @@
-import { Link, createFileRoute } from '@tanstack/react-router'
+import { createFileRoute } from '@tanstack/react-router'
 import { z } from 'zod'
 import { useGetCourses } from '@/generated/hooks/useGetCourses'
-import type { Course } from '@/generated/types/Course'
 import {
   Select,
   SelectContent,
@@ -9,6 +8,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
+import { CourseCard } from './-components/CourseCard'
 
 const courseSearchSchema = z.object({
   semester: z.enum(['spring', 'fall']).optional(),
@@ -19,56 +19,18 @@ export const Route = createFileRoute('/courses/')({
   component: CoursesPage,
 })
 
-function CourseCard({ course }: { course: Course }) {
-  const occupancy = Math.round((course.enrolled / course.capacity) * 100)
-
-  return (
-    <Link
-      to="/courses/$id"
-      params={{ id: course.id }}
-      className="flex flex-col gap-2 rounded-lg border border-border p-4 transition-colors hover:border-foreground"
-    >
-      <div className="flex items-baseline justify-between">
-        <strong>
-          {course.code} – {course.name}
-        </strong>
-        <span className="text-xs text-muted-foreground">
-          {course.credits} credits
-        </span>
-      </div>
-
-      <p className="m-0 text-sm text-muted-foreground">{course.description}</p>
-
-      <div className="text-xs text-muted-foreground">
-        {course.semester.charAt(0).toUpperCase() + course.semester.slice(1)}{' '}
-        {course.year}
-        {' · '}
-        {course.enrolled}/{course.capacity} enrolled ({occupancy}%)
-      </div>
-    </Link>
-  )
-}
-
 function CoursesPage() {
   const { semester } = Route.useSearch()
   const navigate = Route.useNavigate()
 
-  const {
-    data: courses,
-    isLoading,
-    isError,
-  } = useGetCourses(semester ? { semester } : undefined)
+  const { data: courses, isLoading, isError } = useGetCourses(semester ? { semester } : undefined)
 
   if (isLoading) {
     return <p>Loading courses…</p>
   }
 
   if (isError) {
-    return (
-      <p className="text-destructive">
-        Failed to load courses. Is the server running?
-      </p>
-    )
+    return <p className="text-destructive">Failed to load courses. Is the server running?</p>
   }
 
   return (
@@ -79,8 +41,7 @@ function CoursesPage() {
           onValueChange={(value) =>
             navigate({
               search: {
-                semester:
-                  value === 'all' ? undefined : (value as 'spring' | 'fall'),
+                semester: value === 'all' ? undefined : (value as 'spring' | 'fall'),
               },
             })
           }

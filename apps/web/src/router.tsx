@@ -1,8 +1,8 @@
-import { QueryClient } from "@tanstack/react-query";
-import { createRouter as createTanStackRouter } from "@tanstack/react-router";
-import { Link } from "@tanstack/react-router";
-import { routeTree } from "./routeTree.gen";
-import { LoaderCircle } from "lucide-react";
+import { QueryClient } from '@tanstack/react-query'
+import { createRouter as createTanStackRouter } from '@tanstack/react-router'
+import { Link } from '@tanstack/react-router'
+import { routeTree } from './routeTree.gen'
+import { LoaderCircle } from 'lucide-react'
 
 export function getRouter() {
   const queryClient = new QueryClient({
@@ -11,12 +11,12 @@ export function getRouter() {
         staleTime: 1000 * 60 * 10, // 10 minutes
       },
     },
-  });
+  })
 
   const router = createTanStackRouter({
     routeTree,
     scrollRestoration: true,
-    defaultPreload: "intent",
+    defaultPreload: 'intent',
     context: { queryClient },
     // The default pendingComponent a route should use if no pending component is provided.
     defaultPendingComponent: () => (
@@ -31,21 +31,19 @@ export function getRouter() {
     defaultNotFoundComponent: () => (
       <div className="p-8 text-center">
         <h2 className="mb-2 text-xl font-bold">Page not found</h2>
-        <p className="mb-4 text-muted-foreground">
-          The page you're looking for doesn't exist.
-        </p>
+        <p className="mb-4 text-muted-foreground">The page you're looking for doesn't exist.</p>
         <Link to="/" className="text-sm underline">
           Back to home
         </Link>
       </div>
     ),
-  });
+  })
 
-  return router;
+  return router
 }
 
-declare module "@tanstack/react-router" {
+declare module '@tanstack/react-router' {
   interface Register {
-    router: ReturnType<typeof getRouter>;
+    router: ReturnType<typeof getRouter>
   }
 }

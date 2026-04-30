@@ -1,30 +1,28 @@
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { type QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import {
   HeadContent,
   Link,
   Outlet,
   Scripts,
   createRootRouteWithContext,
-} from "@tanstack/react-router";
-import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
+} from '@tanstack/react-router'
+import { TanStackRouterDevtools } from '@tanstack/react-router-devtools'
 
-import appCss from "@/styles.css?url";
+import appCss from '@/styles.css?url'
 
-export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
-  {
-    head: () => ({
-      meta: [
-        { charSet: "utf-8" },
-        { name: "viewport", content: "width=device-width, initial-scale=1" },
-        { title: "PB138 — University App" },
-      ],
-      links: [{ rel: "stylesheet", href: appCss }],
-    }),
-    component: RootLayout,
-    shellComponent: RootDocument,
-    ssr: true,
-  },
-);
+export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
+  head: () => ({
+    meta: [
+      { charSet: 'utf-8' },
+      { name: 'viewport', content: 'width=device-width, initial-scale=1' },
+      { title: 'PB138 — University App' },
+    ],
+    links: [{ rel: 'stylesheet', href: appCss }],
+  }),
+  component: RootLayout,
+  shellComponent: RootDocument,
+  ssr: true,
+})
 
 function RootDocument({ children }: { children: React.ReactNode }) {
   return (
@@ -37,11 +35,11 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         <Scripts />
       </body>
     </html>
-  );
+  )
 }
 
 function RootLayout() {
-  const { queryClient } = Route.useRouteContext();
+  const { queryClient } = Route.useRouteContext()
 
   return (
     <QueryClientProvider client={queryClient}>
@@ -51,21 +49,21 @@ function RootLayout() {
           <Link
             to="/"
             activeOptions={{ exact: true }}
-            activeProps={{ className: "font-semibold text-foreground" }}
+            activeProps={{ className: 'font-semibold text-foreground' }}
             className="text-sm text-muted-foreground hover:text-foreground"
           >
             Home
           </Link>
           <Link
             to="/students"
-            activeProps={{ className: "font-semibold text-foreground" }}
+            activeProps={{ className: 'font-semibold text-foreground' }}
             className="text-sm text-muted-foreground hover:text-foreground"
           >
             Students
           </Link>
           <Link
             to="/courses"
-            activeProps={{ className: "font-semibold text-foreground" }}
+            activeProps={{ className: 'font-semibold text-foreground' }}
             className="text-sm text-muted-foreground hover:text-foreground"
           >
             Courses
@@ -79,5 +77,5 @@ function RootLayout() {
 
       <TanStackRouterDevtools position="bottom-right" />
     </QueryClientProvider>
-  );
+  )
 }

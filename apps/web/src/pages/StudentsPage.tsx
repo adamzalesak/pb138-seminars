@@ -42,7 +42,9 @@ export function StudentsPage() {
       <div className="mb-8 flex flex-col gap-3">
         {students?.map((student) => (
           <div key={student.id} className="rounded-lg border border-border px-4 py-3">
-            <strong>{student.firstName} {student.lastName}</strong>
+            <strong>
+              {student.firstName} {student.lastName}
+            </strong>
             <span className="ml-2 text-sm text-muted-foreground">
               {student.email} · UCO {student.uco}
             </span>
@@ -58,16 +60,27 @@ export function StudentsPage() {
         }}
         className="flex max-w-sm flex-col gap-2"
       >
-        <Input placeholder="First name" value={firstName} onChange={(e) => setFirstName(e.target.value)} />
-        <Input placeholder="Last name" value={lastName} onChange={(e) => setLastName(e.target.value)} />
-        <Input placeholder="Email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
+        <Input
+          placeholder="First name"
+          value={firstName}
+          onChange={(e) => setFirstName(e.target.value)}
+        />
+        <Input
+          placeholder="Last name"
+          value={lastName}
+          onChange={(e) => setLastName(e.target.value)}
+        />
+        <Input
+          placeholder="Email"
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
         <Input placeholder="UCO (6 digits)" value={uco} onChange={(e) => setUco(e.target.value)} />
         <Button type="submit" disabled={mutation.isPending}>
           {mutation.isPending ? 'Creating…' : 'Create student'}
         </Button>
-        {mutation.error && (
-          <p className="text-sm text-destructive">{mutation.error.message}</p>
-        )}
+        {mutation.error && <p className="text-sm text-destructive">{mutation.error.message}</p>}
       </form>
     </div>
   )

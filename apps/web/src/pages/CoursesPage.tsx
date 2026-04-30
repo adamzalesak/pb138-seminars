@@ -20,7 +20,9 @@ function CourseCard({ course }: { course: Course }) {
   return (
     <div className="flex flex-col gap-2 rounded-lg border border-border p-4">
       <div className="flex items-baseline justify-between">
-        <strong>{course.code} – {course.name}</strong>
+        <strong>
+          {course.code} – {course.name}
+        </strong>
         <span className="text-xs text-muted-foreground">{course.credits} credits</span>
       </div>
 
@@ -38,9 +40,11 @@ function CourseCard({ course }: { course: Course }) {
 export function CoursesPage() {
   const [semester, setSemester] = useState<string>('all')
 
-  const { data: courses, isLoading, isError } = useGetCourses(
-    semester === 'all' ? undefined : { semester: semester as 'fall' | 'spring' },
-  )
+  const {
+    data: courses,
+    isLoading,
+    isError,
+  } = useGetCourses(semester === 'all' ? undefined : { semester: semester as 'fall' | 'spring' })
 
   if (isLoading) {
     return <p>Loading courses…</p>

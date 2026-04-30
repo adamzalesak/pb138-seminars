@@ -13,18 +13,25 @@ const bulkEnroll = async (data: BulkEnroll): Promise<number> => {
 }
 
 const transferEnrollment = async (data: TransferEnrollment): Promise<void> => {
-  await db.transaction(async (tx) => {
-    const course = await coursesRepository.findById(tx, data.toCourseId)
-    if (!course) throw new Error('Target course not found')
+  await db.transaction(
+    async (tx) => {
+      const course = await coursesRepository.findById(tx, data.toCourseId)
+      if (!course) throw new Error('Target course not found')
 
-    const enrolled = await enrollmentsRepository.countByCourse(tx, data.toCourseId)
-    if (enrolled >= course.capacity) throw new Error('Target course is full')
+      const enrolled = await enrollmentsRepository.countByCourse(tx, data.toCourseId)
+      if (enrolled >= course.capacity) throw new Error('Target course is full')
 
-    const deleted = await enrollmentsRepository.deleteEnrollment(tx, data.studentId, data.fromCourseId)
-    if (deleted === 0) throw new Error('Student is not enrolled in the source course')
+      const deleted = await enrollmentsRepository.deleteEnrollment(
+        tx,
+        data.studentId,
+        data.fromCourseId,
+      )
+      if (deleted === 0) throw new Error('Student is not enrolled in the source course')
 
-    await enrollmentsRepository.createEnrollment(tx, data.studentId, data.toCourseId)
-  }, { isolationLevel: 'serializable' })
+      await enrollmentsRepository.createEnrollment(tx, data.studentId, data.toCourseId)
+    },
+    { isolationLevel: 'serializable' },
+  )
 }
 
 export const enrollmentsService = { bulkEnroll, transferEnrollment }

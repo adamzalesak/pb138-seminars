@@ -6,8 +6,8 @@ import * as schema from './schema'
 
 // Pool maintains reusable connections to PostgreSQL instead of opening
 // a new connection for every query — faster and easier on the database.
-const pool = new Pool({
-  connectionString: Bun.env.DATABASE_URL,
+export const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
 })
 
 export const db = drizzle(pool, { schema })

@@ -6,8 +6,10 @@ import type { Course, CourseFilter, CreateCourse } from './course.types'
 const findAll = async (db: Database, filter?: CourseFilter): Promise<Course[]> => {
   const conditions = []
   if (filter?.semester) conditions.push(eq(coursesTable.semester, filter.semester))
-  if (filter?.minCredits !== undefined) conditions.push(gte(coursesTable.credits, filter.minCredits))
-  if (filter?.maxCredits !== undefined) conditions.push(lte(coursesTable.credits, filter.maxCredits))
+  if (filter?.minCredits !== undefined)
+    conditions.push(gte(coursesTable.credits, filter.minCredits))
+  if (filter?.maxCredits !== undefined)
+    conditions.push(lte(coursesTable.credits, filter.maxCredits))
   if (filter?.instructorId) conditions.push(eq(coursesTable.instructorId, filter.instructorId))
 
   const rows = await db

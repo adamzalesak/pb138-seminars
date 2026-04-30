@@ -33,7 +33,9 @@ export const courses = pgTable('courses', {
   name: text('name').notNull(),
   description: text('description').notNull(),
   credits: integer('credits').notNull(),
-  instructorId: uuid('instructor_id').notNull().references(() => instructors.id),
+  instructorId: uuid('instructor_id')
+    .notNull()
+    .references(() => instructors.id),
   semester: semesterEnum('semester').notNull(),
   year: integer('year').notNull(),
   capacity: integer('capacity').notNull(),
@@ -42,14 +44,20 @@ export const courses = pgTable('courses', {
 
 // ── Enrollments (M:N junction table) ────────────────────────────────────────
 
-export const enrollments = pgTable('enrollments', {
-  id: uuid('id').primaryKey().defaultRandom(),
-  studentId: uuid('student_id').notNull().references(() => students.id),
-  courseId: uuid('course_id').notNull().references(() => courses.id),
-  enrolledAt: timestamp('enrolled_at').defaultNow().notNull(),
-}, (t) => [
-  unique().on(t.studentId, t.courseId),
-])
+export const enrollments = pgTable(
+  'enrollments',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    studentId: uuid('student_id')
+      .notNull()
+      .references(() => students.id),
+    courseId: uuid('course_id')
+      .notNull()
+      .references(() => courses.id),
+    enrolledAt: timestamp('enrolled_at').defaultNow().notNull(),
+  },
+  (t) => [unique().on(t.studentId, t.courseId)],
+)
 
 // ── Relations ───────────────────────────────────────────────────────────────
 

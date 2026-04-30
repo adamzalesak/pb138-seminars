@@ -9,7 +9,11 @@ const createEnrollment = async (db: Database, studentId: string, courseId: strin
 }
 
 /** Delete a student's enrollment in a specific course. Returns the number of deleted rows. */
-const deleteEnrollment = async (db: Database, studentId: string, courseId: string): Promise<number> => {
+const deleteEnrollment = async (
+  db: Database,
+  studentId: string,
+  courseId: string,
+): Promise<number> => {
   const result = await db
     .delete(enrollmentsTable)
     .where(and(eq(enrollmentsTable.studentId, studentId), eq(enrollmentsTable.courseId, courseId)))

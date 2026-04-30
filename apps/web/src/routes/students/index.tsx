@@ -1,10 +1,7 @@
 import { useState } from 'react'
 import { createFileRoute } from '@tanstack/react-router'
 import { useQueryClient } from '@tanstack/react-query'
-import {
-  useGetStudents,
-  getStudentsQueryKey,
-} from '@/generated/hooks/useGetStudents'
+import { useGetStudents, getStudentsQueryKey } from '@/generated/hooks/useGetStudents'
 import { usePostStudents } from '@/generated/hooks/usePostStudents'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
@@ -40,21 +37,14 @@ function StudentsPage() {
   }
 
   if (isError) {
-    return (
-      <p className="text-destructive">
-        Failed to load students. Is the server running?
-      </p>
-    )
+    return <p className="text-destructive">Failed to load students. Is the server running?</p>
   }
 
   return (
     <div>
       <div className="mb-8 flex flex-col gap-3">
         {students?.map((student) => (
-          <div
-            key={student.id}
-            className="rounded-lg border border-border px-4 py-3"
-          >
+          <div key={student.id} className="rounded-lg border border-border px-4 py-3">
             <strong>
               {student.firstName} {student.lastName}
             </strong>
@@ -89,17 +79,11 @@ function StudentsPage() {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
         />
-        <Input
-          placeholder="UCO (6 digits)"
-          value={uco}
-          onChange={(e) => setUco(e.target.value)}
-        />
+        <Input placeholder="UCO (6 digits)" value={uco} onChange={(e) => setUco(e.target.value)} />
         <Button type="submit" disabled={mutation.isPending}>
           {mutation.isPending ? 'Creating…' : 'Create student'}
         </Button>
-        {mutation.error && (
-          <p className="text-sm text-destructive">{mutation.error.message}</p>
-        )}
+        {mutation.error && <p className="text-sm text-destructive">{mutation.error.message}</p>}
       </form>
     </div>
   )
